@@ -40,14 +40,13 @@ class User(db.Model):
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
-    time_updated = Column(DateTime(timezone=True), onupdate=func.now())
+    # time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
         self.password = password
         self.time_created
-        self.time_updated
 
     def insert(self):
         db.session.add(self)
@@ -67,7 +66,6 @@ class User(db.Model):
             'email': self.email,
             'password': self.password,
             'time_created': self.time_created,
-            'time_updated': self.time_updated
             }
 
 """
@@ -140,7 +138,7 @@ Income
 class Income(db.Model):
     __tablename__ = 'income'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     amount = Column(Numeric(15, 6), nullable=False)
     date = Column(DateTime(timezone=True), server_default=func.now())
