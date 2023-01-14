@@ -106,7 +106,7 @@ def create_app(test_config=None):
 
 
     @app.route('/user/<int:id>', methods=['PATCH'])
-    # @requires_auth('patch:drinks')
+    # @requires_auth('patch:user')
     def update_profile(id):
         body = request.get_json()
         
@@ -134,6 +134,140 @@ def create_app(test_config=None):
 
         except:
             abort(404)
+
+    
+    @app.route('/<int:user_id>/expenses', methods=['GET', 'POST'])
+    # @login_required
+    def expenses(user_id):
+        if request.method == 'POST':
+            body = request.get_json()
+            # print(body)
+
+            user_id = body.get("user_id")
+            category_id = body.get("category_id")
+            name = body.get("name")
+            amount = body.get("amount")
+
+            try:
+                expense = Expense(user_id=user_id, category_id=category_id, name=name, amount=amount)
+                expense.insert()
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "created": expense.format()
+                    }
+                )
+
+            except:
+                abort(422)
+        else:
+            try:
+                expenses = Expense.query.filter(Expense.user_id == user_id).order_by(Expense.category_id).all()
+                expenses_list = [expense.format() for expense in expenses]
+                
+                return jsonify(
+                    {
+                        "success": True,
+                        "expenses": expenses_list
+                    }
+                )
+            except:
+                abort(405)
+
+    @app.route("/expenses/<int:id>", methods=["DELETE"])
+    # @login_required
+    def delete_expense(id):
+        try:    
+            expense = Expense.query.filter(Expense.id == id).one_or_none()
+
+            if expense is None:
+                abort(404)
+
+            expense.delete()
+
+            return jsonify(
+                {
+                    "success": True,
+                    "deleted": id,
+                }
+            )
+
+        except:
+            abort(422)
+
+    @app.route('/<int:user_id>/categories', methods=['GET', 'POST'])
+    # @login_required
+    def categories(user_id):
+        if request.method == 'POST':
+            body = request.get_json()
+            # print(body)
+
+            user_id = body.get("user_id")
+            name = body.get("name")
+
+            try:
+                category = Category(user_id=user_id, name=name)
+                category.insert()
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "created": category.format()
+                    }
+                )
+
+            except:
+                abort(422)
+        else:
+            try:
+                categories = Category.query.filter(Category.user_id == user_id).order_by(Category.id).all()
+                categories_list = [category.format() for category in categories]
+                
+                return jsonify(
+                    {
+                        "success": True,
+                        "categories": categories_list
+                    }
+                )
+            except:
+                abort(405)
+
+    @app.route('/<int:user_id>/expense/<int:id>', methods=['PATCH'])
+    # @requires_auth('patch:expense')
+    def update_expense(user_id, id):
+        body = request.get_json()
+        
+        try:
+            expense = Expense.query.filter(Expense.id == id and Expense.user_id == user_id).one_or_none()
+            if expense is None:
+                abort(404)
+
+            if 'category_id' in body:
+                expense.category_id = body.get('category_id')
+
+            if 'name' in body:
+                expense.name = body.get('name')
+            
+            if 'amount' in body:
+                expense.amount = body.get('amount')
+
+            expense.update()
+
+            updatedExpense = Expense.query.filter(Expense.id == id).first()
+
+            return jsonify(
+                {
+                    "success": True,
+                    "expense": updatedExpense.format()
+                }
+            )
+
+        except:
+            abort(404)
+
+
+
 
 
     @app.errorhandler(400)
