@@ -4,6 +4,7 @@ from unicodedata import category
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
+from werkzeug.security import check_password_hash, generate_password_hash
 import random
 
 from models import setup_db, User, Expense, Category, Income, db
@@ -80,30 +81,59 @@ def create_app(test_config=None):
             email = body.get("email")
             password = body.get("password")
 
-            # try:
-            selection = User.query.filter_by(email = email).first()
-            selection.check_password(password)
+            try:
+                selection = User.query.filter_by(email = email).first()
+                selection.check_password(password)
 
-            if selection.check_password(password):
-                print("password is correct")
-            else:
-                print("Invalid email or password")
-                abort(401)
+                if selection.check_password(password):
+                    print("password is correct")
+                else:
+                    print("Invalid email or password")
+                    abort(401)
 
-            return jsonify(
-                {
-                    "success": "login Successful",
-                    "user": selection.format()
-                }
-            )
+                return jsonify(
+                    {
+                        "success": "login Successful",
+                        "user": selection.format()
+                    }
+                )
 
-            # except:
-            #     abort(422)
+            except:
+                abort(422)
 
         else:
             abort(405)
 
 
+    @app.route('/user/<int:id>', methods=['PATCH'])
+    # @requires_auth('patch:drinks')
+    def update_profile(id):
+        body = request.get_json()
+        
+        try:
+            user = User.query.filter(User.id == id).one_or_none()
+            if user is None:
+                abort(404)
+
+            if 'username' in body:
+                user.username = body.get('username')
+
+            if 'password' in body:
+                user.password = generate_password_hash(body.get('password'))
+
+            user.update()
+
+            updatedUser = User.query.filter(User.id == id).first()
+
+            return jsonify(
+                {
+                    "success": True,
+                    "user": updatedUser.format()
+                }
+            )
+
+        except:
+            abort(404)
 
 
     @app.errorhandler(400)
