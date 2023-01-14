@@ -1,13 +1,15 @@
 #from crypt import methods
 import os
 from unicodedata import category
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, session
+from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from werkzeug.security import check_password_hash, generate_password_hash
 import random
-
 from models import setup_db, User, Expense, Category, Income, db
+from auth import login_required, AuthError
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -106,7 +108,7 @@ def create_app(test_config=None):
 
 
     @app.route('/user/<int:id>', methods=['PATCH'])
-    # @requires_auth('patch:user')
+    @login_required
     def update_profile(id):
         body = request.get_json()
         
@@ -137,7 +139,7 @@ def create_app(test_config=None):
 
     
     @app.route('/<int:user_id>/expenses', methods=['GET', 'POST'])
-    # @login_required
+    @login_required
     def expenses(user_id):
         if request.method == 'POST':
             body = request.get_json()
@@ -176,7 +178,7 @@ def create_app(test_config=None):
                 abort(405)
 
     @app.route("/expenses/<int:id>", methods=["DELETE"])
-    # @login_required
+    @login_required
     def delete_expense(id):
         try:    
             expense = Expense.query.filter(Expense.id == id).one_or_none()
@@ -197,17 +199,17 @@ def create_app(test_config=None):
             abort(422)
 
     @app.route('/<int:user_id>/categories', methods=['GET', 'POST'])
-    # @login_required
+    @login_required
     def categories(user_id):
         if request.method == 'POST':
             body = request.get_json()
             # print(body)
 
-            user_id = body.get("user_id")
-            name = body.get("name")
+            # user_id = body.get("user_id")
+            type = body.get("type")
 
             try:
-                category = Category(user_id=user_id, name=name)
+                category = Category(user_id=user_id, type=type)
                 category.insert()
 
                 return jsonify(
@@ -234,7 +236,7 @@ def create_app(test_config=None):
                 abort(405)
 
     @app.route('/<int:user_id>/expense/<int:id>', methods=['PATCH'])
-    # @requires_auth('patch:expense')
+    @login_required
     def update_expense(user_id, id):
         body = request.get_json()
         

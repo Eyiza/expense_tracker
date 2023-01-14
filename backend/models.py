@@ -81,14 +81,28 @@ class Category(db.Model):
     __tablename__ = 'categories'
 
     id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     type = Column(String, nullable=False)
 
-    def __init__(self, type):
+    def __init__(self, type, user_id):
         self.type = type
+        self.user_id = user_id
+    
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
 
     def format(self):
         return {
             'id': self.id,
+            'user_id': self.user_id,
             'type': self.type
             }
 
