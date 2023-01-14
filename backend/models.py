@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 from flask_migrate import Migrate
 from sqlalchemy.sql import func
+from werkzeug.security import check_password_hash, generate_password_hash
+
 
 
 database_name = 'expense_tracker'
@@ -45,7 +47,7 @@ class User(db.Model):
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
-        self.password = password
+        self.password = generate_password_hash(password)
         self.time_created
 
     def insert(self):
@@ -58,6 +60,9 @@ class User(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def format(self):
         return {

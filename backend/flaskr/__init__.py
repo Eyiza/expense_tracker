@@ -5,7 +5,6 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 import random
-from werkzeug.security import check_password_hash, generate_password_hash
 
 from models import setup_db, User, Expense, Category, Income, db
 
@@ -53,8 +52,8 @@ def create_app(test_config=None):
 
             new_username = body.get("username")
             new_email = body.get("email")
-            pasword = body.get("password")
-            new_password = generate_password_hash(pasword)
+            new_password = body.get("password")
+            # new_password = generate_password_hash(password)
 
             try:
                 user = User(username=new_username, email=new_email, password=new_password)
@@ -81,28 +80,25 @@ def create_app(test_config=None):
             email = body.get("email")
             password = body.get("password")
 
-            try:
-                selection = User.query.filter(
-                    db.and_(
-                        User.email == email, 
-                        )).all()
+            # try:
+            selection = User.query.filter_by(email = email).first()
+            selection.check_password(password)
 
-                if len(selection) == 1 or check_password_hash(selection[0]["password"], password) :
-                    print("password is correct")
-                    user = selection[0]
-                else:
-                    print("Invalid email or password")
-                    abort(401)
+            if selection.check_password(password):
+                print("password is correct")
+            else:
+                print("Invalid email or password")
+                abort(401)
 
-                return jsonify(
-                    {
-                        "success": True,
-                        "user": user.format()
-                    }
-                )
+            return jsonify(
+                {
+                    "success": "login Successful",
+                    "user": selection.format()
+                }
+            )
 
-            except:
-                abort(422)
+            # except:
+            #     abort(422)
 
         else:
             abort(405)
@@ -121,6 +117,14 @@ def create_app(test_config=None):
             400,
         )
 
+    @app.errorhandler(401)
+    def unauthorized(error):
+        return jsonify({
+            "success": False,
+            "error": 401,
+            "message": "Unauthorized request"
+        }), 401
+
     @app.errorhandler(404)
     def not_found(error):
         return (
@@ -130,6 +134,17 @@ def create_app(test_config=None):
                 "message": "resource not found"
             }),
             404,
+        )
+
+    @app.errorhandler(405)
+    def method_not_allowed(error):
+        return (
+            jsonify({
+                "success": False, 
+                "error": 405, 
+                "message": "method not allowed"
+            }),
+            405,
         )
 
     @app.errorhandler(422)
@@ -143,17 +158,6 @@ def create_app(test_config=None):
             422,
         )
 
-
-    @app.errorhandler(405)
-    def method_not_allowed(error):
-        return (
-            jsonify({
-                "success": False, 
-                "error": 405, 
-                "message": "method not allowed"
-            }),
-            405,
-        )
 
     @app.errorhandler(500)
     def internal_server_error(error):
