@@ -15,3 +15,4 @@ SQLAlchemy
 Werkzeug
 flask_moment
 Flask-Session
+gunicorn
