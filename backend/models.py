@@ -3,7 +3,9 @@ from sqlalchemy import Column, String, Integer, create_engine, DateTime, Numeric
 from flask_sqlalchemy import SQLAlchemy
 import json
 from flask_migrate import Migrate
+from sqlalchemy import create_engine, Sequence
 from sqlalchemy.sql import func
+# from sqlalchemy.orm import sessionmaker
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -77,16 +79,40 @@ class User(db.Model):
 Category
 
 """
+class UserCategory(db.Model):
+    __tablename__ = "usercategories"
+    user_id = Column(Integer, ForeignKey("users.id", ondelete='CASCADE'), primary_key=True)
+    category_id = Column(Integer, ForeignKey("categories.id", ondelete='CASCADE'), primary_key=True)
+
+    def __init__(self, user_id, category_id):
+        self.user_id = user_id
+        self.category_id = category_id
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def format(self):
+        return {
+            'id': self.id,
+            'type': self.type
+            }
+
 class Category(db.Model):
     __tablename__ = 'categories'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    type = Column(String, nullable=False)
+    type = Column(String, nullable=False, unique=True)
 
-    def __init__(self, type, user_id):
+    def __init__(self, type):
         self.type = type
-        self.user_id = user_id
     
     def insert(self):
         db.session.add(self)
@@ -102,9 +128,13 @@ class Category(db.Model):
     def format(self):
         return {
             'id': self.id,
-            'user_id': self.user_id,
             'type': self.type
             }
+
+def get_categories(user_id):
+    # categories = Category.query.join(UserCategory).filter(UserCategory.user_id == user_id).with_entities(Category.type).all()
+    categories = Category.query.join(UserCategory).filter(UserCategory.user_id == user_id).all()
+    return categories
 
 
 """
@@ -118,7 +148,7 @@ class Expense(db.Model):
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     category_id = Column(Integer, ForeignKey('categories.id', ondelete='CASCADE'), nullable=False)
     name = Column(String, nullable=False)
-    amount = Column(Numeric(15, 6), nullable=False)
+    amount = Column(Numeric(15, 2), nullable=False)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
 
     def __init__(self, user_id, category_id, name, amount):

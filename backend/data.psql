@@ -1,27 +1,11 @@
-INSERT INTO users(username, email, password) VALUES ('Emmy', 'example@gmail.com', 'Malt56');
-INSERT INTO users(username, email, password) VALUES ('Gloria', 'gloria@gmail.com', 'Gloria26');
-INSERT INTO users(username, email, password) VALUES ('Joe', 'joe@gmail.com', 'Joe');
-INSERT INTO users(username, email, password) VALUES ('Bella', 'bella@gmail.com', 'Bella@2015');
-INSERT INTO users(username, email, password) VALUES ('Diana', 'diana@gmail.com', 'Diana896');
-
 INSERT INTO categories(type) VALUES ('Groceries');
+INSERT INTO categories(type) VALUES ('Food and Dining');
+INSERT INTO categories(type) VALUES ('Transportation');
+INSERT INTO categories(type) VALUES ('Healthcare');
+INSERT INTO categories(type) VALUES ('Personal Care');
 INSERT INTO categories(type) VALUES ('Housing');
 INSERT INTO categories(type) VALUES ('Utilities');
-INSERT INTO categories(type) VALUES ('Dining Out');
 INSERT INTO categories(type) VALUES ('Shopping');
 INSERT INTO categories(type) VALUES ('Travel');
 INSERT INTO categories(type) VALUES ('Entertainment');
 INSERT INTO categories(type) VALUES ('Other');
-
-INSERT INTO expenses(user_id, category_id, name, amount) VALUES (1, 1, 'Snacks', 30000);
-INSERT INTO expenses(user_id, category_id, name, amount) VALUES (5, 3, 'Medications', 42000);
-INSERT INTO expenses(user_id, category_id, name, amount) VALUES (2, 4, 'Margarine', 2000);
-INSERT INTO expenses(user_id, category_id, name, amount) VALUES (3, 5, 'Gasoline', 40000);
-INSERT INTO expenses(user_id, category_id, name, amount) VALUES (4, 2, 'Detergent', 3000);
-
-INSERT INTO income(user_id, amount) VALUES (1, 100000);
-INSERT INTO income(user_id, amount) VALUES (5, 52000);
-INSERT INTO income(user_id, amount) VALUES (4, 25000);
-INSERT INTO income(user_id, amount) VALUES (3, 500000);
-INSERT INTO income(user_id, amount) VALUES (2, 63000);
-
