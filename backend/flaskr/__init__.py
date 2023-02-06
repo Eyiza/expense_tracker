@@ -53,7 +53,7 @@ def create_app(test_config=None):
         if "user_id" in session:
             return jsonify({
                 "Logged in": 'Logged in as ' + session['email'],
-                "session": session,
+                # "session": session
             })
         return 'You are not logged in'
         print(session)        
@@ -64,7 +64,7 @@ def create_app(test_config=None):
         return jsonify(
                     {
                         "success": 'Logged out',
-                        "session": session
+                        # "session": session
                     }
                 )
 
@@ -92,14 +92,14 @@ def create_app(test_config=None):
 
                 session["user_id"] = user.id
                 session["email"] = user.email
+                print(session.items())
                 session_id = session.sid
                 print(f'Session ID: {session_id}')
 
                 return jsonify(
                     {
                         "success": "User Created",
-                        "created": user.format(),
-                        "session": session
+                        "created": user.format()
                     }
                 )
 
@@ -123,7 +123,6 @@ def create_app(test_config=None):
 
             try:
                 selection = User.query.filter_by(email = email).first()
-                # selection.check_password(password)
                 if selection is None:
                     return "User does not exist"
 
@@ -145,7 +144,6 @@ def create_app(test_config=None):
                         {
                             "success": "login Successful",
                             "user": selection.format(),
-                            "session": session
                         }
                     )
 
