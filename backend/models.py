@@ -10,11 +10,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 
 
-database_name = 'expense_tracker'
-# database_path = 'postgresql://{}/{}'.format('localhost:5432', database_name)
-database_path = "postgresql://{}:{}@{}/{}".format(
-    "postgres", "admin", "localhost:5432", database_name
-)
+# database_name = 'expense_tracker'
+# database_path = "postgresql://{}:{}@{}/{}".format(
+#     "postgres", "admin", "localhost:5432", database_name
+# )
+
+database_path = os.environ.get("DATABASE_URL")
 
 db = SQLAlchemy()
 migrate = Migrate()

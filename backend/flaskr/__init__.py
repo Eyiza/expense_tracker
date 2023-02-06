@@ -17,6 +17,7 @@ from auth import login_required, AuthError
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
+    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
     with app.app_context():
         setup_db(app)
 
@@ -24,9 +25,6 @@ def create_app(test_config=None):
     app.config["SESSION_TYPE"] = "filesystem"
     app.config['PERMANENT_SESSION_LIFETIME'] = 3600 # 30 minutes
     Session(app)
-    
-    # app.config['SESSION_TYPE'] = 'sqlalchemy'
-    # app.config['SESSION_SQLALCHEMY'] = SQLAlchemy(app)
     
     
     cors = CORS(app, resources={r"/api/*" : {"origins": '*'}})
