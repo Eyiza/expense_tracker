@@ -21,8 +21,8 @@ export default function Home() {
       </Head>
       <main className='flex flex-col justify-center items-center font-light'>
         {/* <Nav/> */}
-        <div className='bg-white shadow-lg rounded-lg w-96 h-96 mt-28'>
-            <form action="" className='flex flex-col gap-8 justify-center items-center mt-5'>
+        <div className='bg-white shadow-lg rounded-lg w-96 pb-10 mt-28'>
+            <form action="" className='flex flex-col gap-5 justify-center items-center mt-5'>
               <div className='flex flex-col'>
                 <label className='text-[#1E1E1E] text-lg mb-2 font-normal'>Email</label>
                 <input placeholder='Joe@gmail.com' className='border border-black bg-white focus:outline-none rounded-sm text-sm h-8 w-60 px-1 py-[3px]' type="text" name="username" id="username" />
