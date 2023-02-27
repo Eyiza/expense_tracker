@@ -6,12 +6,31 @@ import {AiOutlineEye} from 'react-icons/ai'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import forgetPassword from './forgetPassword'
+import { set } from 'react-hook-form'
+
 export default function Home() {
   const [inputType, setInputType] = useState('password');
+  const [email, setEmail] = useState("")
+  const [password, setpassword] = useState("")
   const router = useRouter();
   const toggleInput = ()=>{
     setInputType(inputType === 'password' ? 'text': 'password')
       }
+  const LoginToApp = (e) => {
+    e.preventDefault()
+    if (email.length == 0) {
+      alert('Please enter an email')
+    }
+    else if (password.length == 0){
+      alert('please enter a password')
+    }
+    else {
+      console.log(email, password)
+      setEmail('')
+      setpassword('')
+    }
+    
+  }
   return (
     <div className=''>
       <Head>
@@ -25,17 +44,17 @@ export default function Home() {
             <form action="" className='flex flex-col gap-5 justify-center items-center mt-5'>
               <div className='flex flex-col'>
                 <label className='text-[#1E1E1E] text-lg mb-2 font-normal'>Email</label>
-                <input placeholder='Joe@gmail.com' className='border border-black bg-white focus:outline-none rounded-sm text-sm h-8 w-60 px-1 py-[3px]' type="text" name="username" id="username" />
+                <input placeholder='Joe@gmail.com' value={email} onChange={(e) => setEmail(e.target.value)} className='border border-black bg-white focus:outline-none rounded-sm text-sm h-8 w-60 px-1 py-[3px]' type="text" name="username" id="username" />
               </div>
               <div className='flex flex-col'>
                 <label className='text-[#1E1E1E] text-lg mb-2 font-normal'>Password</label>
                 <div className='flex items-center relative'>
-                <input className='border border-black bg-white focus:outline-none rounded-sm px-1 h-8 w-60 text-sm py-[3px]' type={inputType} name="password" id="password" />
+                <input value={password}  onChange={(e) => setpassword(e.target.value)} className='border border-black bg-white focus:outline-none rounded-sm px-1 h-8 w-60 text-sm py-[3px]' type={inputType} name="password" id="password" />
                  <AiOutlineEye className='cursor-pointer text-[24px] absolute -right-7' onClick={toggleInput}/>
                 </div>
               </div>
               <div>
-                <button type="submit" className='bg-[#EB741E] w-60 px-10 py-1 rounded-md'>Log in</button>
+                <button type="submit" onClick={LoginToApp} className='bg-[#EB741E] w-60 px-10 py-1 rounded-md'>Log in</button>
               </div>
               <div>
                 <p className='text-[#2F71AD] cursor-pointer text-sm' onClick={() => router.push("forgetPassword")}>Forgot password?</p>
