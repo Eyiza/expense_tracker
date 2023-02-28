@@ -7,6 +7,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import forgetPassword from './forgetPassword'
 import { set } from 'react-hook-form'
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 export default function Home() {
   const [inputType, setInputType] = useState('password');
@@ -16,7 +18,7 @@ export default function Home() {
   const toggleInput = ()=>{
     setInputType(inputType === 'password' ? 'text': 'password')
       }
-  const LoginToApp = (e) => {
+  const LoginToApp = async (e) => {
     e.preventDefault()
     if (email.length == 0) {
       alert('Please enter an email')
@@ -25,9 +27,20 @@ export default function Home() {
       alert('please enter a password')
     }
     else {
-      console.log(email, password)
-      setEmail('')
-      setpassword('')
+      const response = await axios.post('https://expense-tracker-tum2.onrender.com/login', {
+        email: email,
+        password: password,
+      });
+      if (response.data.success) {
+        Cookies.set('session', response.data.session_id);
+        // redirect to the dashboard
+        setEmail('')
+        setpassword('')
+        router.push('/Dashboard')
+      } else {
+        // display error message
+        console.log(response.data.error)
+      }
     }
     
   }
@@ -40,16 +53,16 @@ export default function Home() {
       </Head>
       <main className='flex flex-col justify-center items-center font-light'>
         {/* <Nav/> */}
-        <div className='bg-white shadow-lg rounded-lg px-10 pb-10 mt-28'>
-            <form action="" className='flex flex-col gap-5 justify-center items-center mt-5'>
+        <div className='bg-white shadow-lg rounded-lg px-12 pb-10 pt-4 mt-28'>
+            <form action="" className='flex flex-col gap-8 justify-center items-center mt-5'>
               <div className='flex flex-col'>
-                <label className='text-[#1E1E1E] text-lg mb-2 font-normal'>Email</label>
-                <input placeholder='Joe@gmail.com' value={email} onChange={(e) => setEmail(e.target.value)} className='border border-black bg-white focus:outline-none rounded-sm text-sm h-8 w-60 px-1 py-[3px]' type="text" name="username" id="username" />
+                <label className='text-[#1E1E1E] text-sm mb-2 font-normal'>Email</label>
+                <input placeholder='Joe@gmail.com' value={email} onChange={(e) => setEmail(e.target.value)} className='border border-[#1E1E1E] bg-white focus:outline-none rounded-sm text-sm h-8 w-60 px-2 py-[3px]' type="text" name="username" id="username" />
               </div>
               <div className='flex flex-col'>
-                <label className='text-[#1E1E1E] text-lg mb-2 font-normal'>Password</label>
+                <label className='text-[#1E1E1E] text-sm mb-2 font-normal'>Password</label>
                 <div className='flex items-center relative'>
-                <input value={password}  onChange={(e) => setpassword(e.target.value)} className='border border-black bg-white focus:outline-none rounded-sm px-1 h-8 w-60 text-sm py-[3px]' type={inputType} name="password" id="password" />
+                <input value={password}  onChange={(e) => setpassword(e.target.value)} className='border border-[#1E1E1E] bg-white focus:outline-none rounded-sm px-1 h-8 w-60 text-sm py-[3px]' placeholder='Password' type={inputType} name="password" id="password" />
                  <AiOutlineEye className='cursor-pointer text-[24px] absolute -right-7' onClick={toggleInput}/>
                 </div>
               </div>
