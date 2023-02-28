@@ -18,6 +18,8 @@ Developers using this project should already have Python3, pip, postgresql, and 
 
 
 ## Backend
+The [backend](./backend/README.md) directory is responsible for handling data and processing user requests. It is responsible for handling user authentication, storing and retrieving expense data, generating expense reports, and more.
+It contains server architecture, databases, and APIs. 
 
 ### Installation
 
@@ -41,7 +43,7 @@ All required packages are included in the requirements file.
 
 
 3. **Set up the Database**
-With Postgres running, run the following commands from the /backend directory to connect to your database and set a secret key for your application (otherwise hard code the string ```SECRET_KEY``` in __init__.py and the string ```DATABASE_URL``` in models.py files): 
+With Postgres running, run the following commands from the /backend directory to connect to your database and set a secret key for your application (otherwise hard code the string ```SECRET_KEY``` in __init__.py and the string ```DATABASE_URL``` in models.py files):<br> 
 For Mac/Linux
 ```
 export DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}
@@ -71,7 +73,7 @@ psql expense_tracker < data.psql
 
 
 4. **Run the development server**
-To run the application run the following commands from the /backend directory: 
+To run the application run the following commands from the /backend directory: <br>
 For Mac/Linux
 ```
 export FLASK_APP=flaskr
