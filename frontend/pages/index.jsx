@@ -6,14 +6,16 @@ import {AiOutlineEye} from 'react-icons/ai'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import forgetPassword from './forgetPassword'
-import { set } from 'react-hook-form'
 import axios from 'axios';
 import Cookies from 'js-cookie';
-
+import fetch from 'isomorphic-unfetch';
+import { config } from './apiConfig';
+// 'https://expense-tracker-tum2.onrender.com/login
 export default function Home() {
   const [inputType, setInputType] = useState('password');
   const [email, setEmail] = useState("")
   const [password, setpassword] = useState("")
+  const [message, setMessage] = useState('');
   const router = useRouter();
   const toggleInput = ()=>{
     setInputType(inputType === 'password' ? 'text': 'password')
@@ -27,19 +29,27 @@ export default function Home() {
       alert('please enter a password')
     }
     else {
-      const response = await axios.post('https://expense-tracker-tum2.onrender.com/login', {
-        email: email,
-        password: password,
-      });
-      if (response.data.success) {
-        Cookies.set('session', response.data.session_id);
+      const response = await fetch(`${config.baseUrl}/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({email, password})
+    })
+
+    const data = await response.json();
+      if (data.success) {
+        Cookies.set('session_id', data.user["id"]);
+        const session_id = Cookies.get('session_id');
+        console.log(session_id);
+        Cookies.set('email', data.user["email"]); // set email cookie
         // redirect to the dashboard
         setEmail('')
         setpassword('')
         router.push('/Dashboard')
       } else {
         // display error message
-        console.log(response.data.error)
+        console.log(data.error)
       }
     }
     
