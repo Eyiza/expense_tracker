@@ -5,6 +5,7 @@ from flask import Flask, request, redirect, abort, jsonify, session
 from flask_session import Session
 # from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_sqlalchemy import SQLAlchemy
+from flask_restful import Api
 from flask_cors import CORS, cross_origin
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.exc import IntegrityError
@@ -12,11 +13,21 @@ from sqlalchemy.sql import func
 import random
 from models import setup_db, User, Expense, Category,UserCategory, Income, db, get_categories
 from auth import login_required, AuthError
+from flask_mail import Mail, Message
+import random
+import string
+from datetime import datetime, timedelta
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+# import secrets
+# import smtplib
+# from email.mime.text import MIMEText
+# from email.mime.multipart import MIMEMultipart
 
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
+    mail = Mail(app)
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
     with app.app_context():
         setup_db(app)
@@ -25,7 +36,43 @@ def create_app(test_config=None):
     app.config["SESSION_TYPE"] = "filesystem"
     app.config['PERMANENT_SESSION_LIFETIME'] = 3600 # 30 minutes
     Session(app)
-    
+    # This is the configuration for the email server.
+    # app.config["MAIL_SERVER"] = "smtp.gmail.com"
+    # app.config["MAIL_PORT"] = 465
+    # app.config["MAIL_USERNAME"] = os.environ.get("EMAIL_HOST_USER")
+    # app.config["MAIL_PASSWORD"] = os.environ.get("EMAIL_HOST_PASSWORD")
+    # app.config["MAIL_USE_TLS"] = False
+    # app.config["MAIL_USE_SSL"] = True
+
+    # app.config['SECRET_KEY'] = 'your-secret-key-here'
+    # app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    # app.config['MAIL_PORT'] = 587
+    # app.config['MAIL_USE_TLS'] = True
+    # app.config['MAIL_USERNAME'] = 'Precious.michael2002@gmail.com'
+    # app.config['MAIL_PASSWORD'] = 'sunday2017'
+    # app.config['MAIL_DEFAULT_SENDER'] = 'Precious.michael2002@gmail.com'
+
+    # app.config.update(
+    #     DEBUG=True,
+    #     MAIL_SERVER='smtp.gmail.com',
+    #     MAIL_PORT=465,
+    #     MAIL_USE_SSL=True,
+    #     MAIL_USERNAME='Precious.michael2002@gmail.com',
+    #     MAIL_PASSWORD='mvnpyhsmfgcxgyac'
+    # )
+
+    app.config['MAIL_SERVER']='smtp.gmail.com'
+    app.config['MAIL_PORT'] = 465
+    app.config['MAIL_USERNAME'] = 'Precious.michael2002@gmail.com'
+    app.config['MAIL_PASSWORD'] = 'mvnpyhsmfgcxgyac'
+    app.config['MAIL_USE_TLS'] = False
+    app.config['MAIL_USE_SSL'] = True
+    app.config['MAIL_DEFAULT_SENDER'] = 'noreply@expense.com'
+
+
+    mail = Mail(app)
+
+    s = URLSafeTimedSerializer('SECRET_KEY')    
     
     cors = CORS(app ,supports_credentials=True, origins=['*'])
     # cors = CORS(app, resources={r"/api/*" : {"origins": '*'}})
@@ -45,9 +92,6 @@ def create_app(test_config=None):
         response.headers["Pragma"] = "no-cache"
         return response
 
-    # @app.route('/')
-    # def index():
-    #     return 'Session Active'
 
     @app.route('/')
     def index():
@@ -155,6 +199,60 @@ def create_app(test_config=None):
 
         else:
             abort(405)
+
+
+    @app.route('/forgot_password', methods=['POST'])
+    def forgot_password():
+        email = request.json.get('email')
+        user = User.query.filter(User.email == email).one_or_none()
+        if user:
+            # Generate token
+            token = s.dumps(email, salt='reset_password')
+            
+            # Create message with token and send email
+            msg = Message('Password Reset Request', sender='noreply@expense.com', recipients=[email])
+            msg.body = f"Hi,\n\nPlease use the following link to reset your password:\n\nhttp://localhost:3000/Token?token={token}\n\nLink expires in 10 minutes\n\nIf you did not make this request then simply ignore this email and no changes will be made."
+            mail.send(msg)
+            
+            return jsonify(
+                {
+                    "success": True,
+                    'message': 'Password reset link has been sent to your email.'
+                }
+            ),200
+        else:
+            return jsonify({'error': 'User with provided email does not exist'}), 404
+
+
+    @app.route('/reset_password', methods=['POST'])
+    def reset_password():
+        new_password = request.json.get('password')
+        token = request.json.get('token')
+        # confirm_password = request.json.get('confirm_password')
+
+        try:
+            # Verify token
+            email = s.loads(token, salt='reset_password', max_age=600) # Expires in 10 minutes
+        except SignatureExpired:
+            # If token is expired, return error response
+            return jsonify({'error': 'Password reset link has expired.'}), 400
+        except BadSignature:
+            # If token is invalid, return error response
+            return jsonify({'error': 'Invalid password reset link.'}), 400
+
+        user = User.query.filter(User.email == email).one_or_none()
+        if user is None:
+            abort(404)
+        user.password = generate_password_hash(new_password)
+        user.update()
+        
+        return jsonify(
+            {
+                "success": True,
+                'message': 'Password has been reset successfully.'
+            }
+        ),200
+
 
 
     @app.route('/user', methods=['GET','PATCH','DELETE'])
