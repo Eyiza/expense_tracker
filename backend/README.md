@@ -27,6 +27,21 @@ The first time you run the tests, omit the dropdb command.
 
 - Authentication: This application uses Flask Session Package to handle authentication. 
 
+### Mail Server
+This application uses Flask Mail Package to handle emails. <br>
+Run the following commands from the /backend directory to set up the environment variables of the mailing server of your application (otherwise hard code the string ```MAIL_USERNAME``` and ```MAIL_PASSWORD``` in __init__.py file):<br> 
+For Mac/Linux
+```
+export MAIL_USERNAME=example@gmail.com
+export MAIL_PASSWORD=password
+```
+For Windows PowerShell, use $env: instead of export:
+```
+$env:MAIL_USERNAME = "example@gmail.com" 
+$env:MAIL_PASSWORD = "" 
+``` 
+
+
 ### Error Handling
 Errors are returned as JSON objects in the following format:
 ```

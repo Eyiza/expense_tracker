@@ -48,13 +48,11 @@ For Mac/Linux
 ```
 export DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}
 export SECRET_KEY=someRandomStringOfText
-flask run
 ```
 For Windows PowerShell, use $env: instead of export:
 ```
 $env:DATABASE_URL = "postgres://{user}:{password}@{hostname}:{port}/{database-name}"
 $env:SECRET_KEY = "someRandomStringOfText"
-flask run
 ```
 
 
@@ -89,7 +87,7 @@ flask run
 
 These commands put the application in development and directs our application to use the `__init__.py` file in our flaskr folder. If running locally on Windows, look for the commands in the [Flask documentation](http://flask.pocoo.org/docs/1.0/tutorial/factory/).
 
-
+ 
 
 ### Frontend
 
