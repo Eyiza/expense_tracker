@@ -65,12 +65,12 @@ flask db init
 flask db migrate
 ```
 
-Populate the database using the `data.psql` file provided. From the `backend` folder in terminal run:
+Populate the categories table using the `data.psql` file provided. This will create default spending categories for every user.<br>
+From the `backend` folder in terminal run:
 
 ```
 psql expense_tracker < data.psql
 ```
-
 
 4. **Run the development server**
 To run the application run the following commands from the /backend directory: <br>
