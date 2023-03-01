@@ -10,7 +10,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import fetch from 'isomorphic-unfetch';
 import { config } from './apiConfig';
-// 'https://expense-tracker-tum2.onrender.com/login
+
 export default function Home() {
   const [inputType, setInputType] = useState('password');
   const [email, setEmail] = useState("")

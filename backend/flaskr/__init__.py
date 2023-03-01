@@ -27,7 +27,8 @@ def create_app(test_config=None):
     Session(app)
     
     
-    cors = CORS(app, resources={r"/api/*" : {"origins": '*'}})
+    cors = CORS(app ,supports_credentials=True, origins=['*'])
+    # cors = CORS(app, resources={r"/api/*" : {"origins": '*'}})
 
     # CORS Headers
     @app.after_request
@@ -44,16 +45,15 @@ def create_app(test_config=None):
         response.headers["Pragma"] = "no-cache"
         return response
 
+    # @app.route('/')
+    # def index():
+    #     return 'Session Active'
+
     @app.route('/')
     def index():
-        return 'Session Active'
-
-    @app.route('/get_session')
-    def get_session():
         if "user_id" in session:
             return jsonify({
                 "Logged in": 'Logged in as ' + session['email'],
-                # "session": session
             })
         return 'You are not logged in'
         print(session)        
@@ -63,8 +63,8 @@ def create_app(test_config=None):
         session.clear()
         return jsonify(
                     {
-                        "success": 'Logged out',
-                        # "session": session
+                        "success": True,
+                        'message': 'Logout successful',
                     }
                 )
 
@@ -77,7 +77,7 @@ def create_app(test_config=None):
 
             new_username = body.get("username")
             # username = request.form.get('username')
-            new_email = body.get("email")
+            new_email = body.get("email").lower()
             new_password = body.get("password")
             # new_password = generate_password_hash(password)
 
@@ -98,7 +98,8 @@ def create_app(test_config=None):
 
                 return jsonify(
                     {
-                        "success": "User Created",
+                        "success": True,
+                        'message': 'User created',
                         "created": user.format()
                     }
                 )
@@ -118,7 +119,7 @@ def create_app(test_config=None):
             body = request.get_json()
             # print(body)
 
-            email = body.get("email")
+            email = body.get("email").lower()
             password = body.get("password")
 
             try:
@@ -142,10 +143,12 @@ def create_app(test_config=None):
 
                 return jsonify(
                         {
-                            "success": "login Successful",
-                            "user": selection.format(),
+                            "success": True,
+                            'message': 'Login successful',
+                            "user": selection.format()
                         }
                     )
+            
 
             except:
                 abort(422)
@@ -191,6 +194,7 @@ def create_app(test_config=None):
                 if user is None:
                     abort(404)
                 return {
+                    "success": True,
                     'id': user.id,
                     'username': user.username,
                     'email': user.email,
