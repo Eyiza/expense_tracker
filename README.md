@@ -102,8 +102,8 @@ npm run dev
 ```
 
 By default, the frontend will run on localhost:3000. 
-This frontend is designed to work with [Flask-based Backend](../backend) so it will not load successfully if the backend is not working or not connected i.e Ensure the backend is already running in a terminal then open a new terminal and type the commands to run the frontend above.
-
+This frontend is designed to work with [Flask-based Backend](./backend) so it will not load successfully if the backend is not working or not connected i.e Ensure the backend is already running in a terminal then open a new terminal and type the commands to run the frontend above.<br>
+Update the [apiConfig](./frontend/pages/apiConfig.js) file to include your running backend URL.
 
 
 
