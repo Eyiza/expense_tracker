@@ -63,7 +63,8 @@ def create_app(test_config=None):
         session.clear()
         return jsonify(
                     {
-                        "success": 'Logged out',
+                        "success": True,
+                        'message': 'Logout successful',
                     }
                 )
 
@@ -97,7 +98,8 @@ def create_app(test_config=None):
 
                 return jsonify(
                     {
-                        "success": "User Created",
+                        "success": True,
+                        'message': 'User created',
                         "created": user.format()
                     }
                 )
@@ -192,6 +194,7 @@ def create_app(test_config=None):
                 if user is None:
                     abort(404)
                 return {
+                    "success": True,
                     'id': user.id,
                     'username': user.username,
                     'email': user.email,

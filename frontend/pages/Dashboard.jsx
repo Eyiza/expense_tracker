@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from "react";
 
 const Dashboard = () => {
+  const email = Cookies.get('email');
   const router = useRouter();
   useEffect(() => {
     const session_id = Cookies.get('session_id');
@@ -12,7 +13,7 @@ const Dashboard = () => {
     }
   }, []);
 
-  return <h1>Welcome to the dashboard!</h1>;
+  return <h1>Logged in as {email}!</h1>;
 };
 
 export default Dashboard;
