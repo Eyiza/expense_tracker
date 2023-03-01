@@ -158,4 +158,4 @@ The API will return the following error types when requests fail:
 }
 ```
 
-**For additional tests, please refer to the Postman collection file.**
+**For additional tests, please refer to the [Postman collection file](./tests/expense_tracker.postman_collection.json).**
