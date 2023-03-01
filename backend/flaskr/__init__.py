@@ -77,7 +77,7 @@ def create_app(test_config=None):
 
             new_username = body.get("username")
             # username = request.form.get('username')
-            new_email = body.get("email")
+            new_email = body.get("email").lower()
             new_password = body.get("password")
             # new_password = generate_password_hash(password)
 
@@ -119,7 +119,7 @@ def create_app(test_config=None):
             body = request.get_json()
             # print(body)
 
-            email = body.get("email")
+            email = body.get("email").lower()
             password = body.get("password")
 
             try:
