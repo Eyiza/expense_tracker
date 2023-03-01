@@ -1,13 +1,14 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
+import React, { useEffect, useState } from "react";
 
 const Dashboard = () => {
   const router = useRouter();
   useEffect(() => {
-    const session = Cookies.get('session');
-    if (!session) {
-      router.push('/login');
+    const session_id = Cookies.get('session_id');
+    if (!session_id) {
+      router.push('/');
     }
   }, []);
 

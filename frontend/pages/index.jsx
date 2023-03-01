@@ -9,6 +9,7 @@ import forgetPassword from './forgetPassword'
 import { set } from 'react-hook-form'
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import fetch from 'isomorphic-unfetch';
 
 export default function Home() {
   const [inputType, setInputType] = useState('password');
@@ -27,19 +28,31 @@ export default function Home() {
       alert('please enter a password')
     }
     else {
-      const response = await axios.post('https://expense-tracker-tum2.onrender.com/login', {
-        email: email,
-        password: password,
-      });
-      if (response.data.success) {
-        Cookies.set('session', response.data.session_id);
+      // const response = await axios.post('https://expense-tracker-tum2.onrender.com/login', {
+      //   email: email,
+      //   password: password,
+      // });
+
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({email, password})
+    })
+
+    const data = await response.json();
+      if (data.success) {
+        Cookies.set('session_id', data.user["id"]);
+        const session_id = Cookies.get('session_id');
+        console.log(session_id);
         // redirect to the dashboard
         setEmail('')
         setpassword('')
         router.push('/Dashboard')
       } else {
         // display error message
-        console.log(response.data.error)
+        console.log(data.error)
       }
     }
     

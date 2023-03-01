@@ -27,7 +27,8 @@ def create_app(test_config=None):
     Session(app)
     
     
-    cors = CORS(app, resources={r"/api/*" : {"origins": '*'}})
+    cors = CORS(app ,supports_credentials=True, origins=['*'])
+    # cors = CORS(app, resources={r"/api/*" : {"origins": '*'}})
 
     # CORS Headers
     @app.after_request
@@ -44,16 +45,15 @@ def create_app(test_config=None):
         response.headers["Pragma"] = "no-cache"
         return response
 
+    # @app.route('/')
+    # def index():
+    #     return 'Session Active'
+
     @app.route('/')
     def index():
-        return 'Session Active'
-
-    @app.route('/get_session')
-    def get_session():
         if "user_id" in session:
             return jsonify({
                 "Logged in": 'Logged in as ' + session['email'],
-                # "session": session
             })
         return 'You are not logged in'
         print(session)        
@@ -64,7 +64,6 @@ def create_app(test_config=None):
         return jsonify(
                     {
                         "success": 'Logged out',
-                        # "session": session
                     }
                 )
 
@@ -142,10 +141,12 @@ def create_app(test_config=None):
 
                 return jsonify(
                         {
-                            "success": "login Successful",
-                            "user": selection.format(),
+                            "success": True,
+                            'message': 'Login successful',
+                            "user": selection.format()
                         }
                     )
+            
 
             except:
                 abort(422)
