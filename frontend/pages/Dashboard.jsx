@@ -13,7 +13,7 @@ const Dashboard = () => {
     }
   }, []);
 
-  return <h1>Logged in as {email}!</h1>;
+  return <h1>Logged in!</h1>;
 };
 
 export default Dashboard;
