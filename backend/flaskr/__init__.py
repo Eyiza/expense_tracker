@@ -59,7 +59,8 @@ def create_app(test_config=None):
 
     app.config['MAIL_SERVER']='smtp.gmail.com'
     app.config['MAIL_PORT'] = 465
-    
+    app.config['MAIL_USERNAME'] = 'Precious.michael2002@gmail.com'
+    app.config['MAIL_PASSWORD'] = 'mvnpyhsmfgcxgyac'
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = True
     app.config['MAIL_DEFAULT_SENDER'] = 'noreply@expense.com'
@@ -94,8 +95,8 @@ def create_app(test_config=None):
             return jsonify({
                 "Logged in": 'Logged in as ' + session['email'],
             })
-        return 'You are not logged in'
-        print(session)        
+        print(session) 
+        return 'You are not logged in'      
     
     @app.route('/logout')
     def logout():
@@ -114,7 +115,7 @@ def create_app(test_config=None):
             body = request.get_json()
             # print(body)
 
-            new_username = body.get("username")
+            new_username = body.get("name")
             # username = request.form.get('username')
             new_email = body.get("email").lower()
             new_password = body.get("password")
@@ -131,21 +132,20 @@ def create_app(test_config=None):
 
                 session["user_id"] = user.id
                 session["email"] = user.email
-                print(session.items())
                 session_id = session.sid
                 print(f'Session ID: {session_id}')
 
                 return jsonify(
                     {
                         "success": True,
-                        'message': 'User created',
-                        "created": user.format()
+                        'message': 'Account created',
+                        "user": user.format()
                     }
                 )
 
             except IntegrityError as e:
                 print("An integrity error occurred:", e)
-                return "User already exist"
+                return jsonify({'error': 'User already exixts'}), 401
 
             except:
                 abort(422)
@@ -164,7 +164,8 @@ def create_app(test_config=None):
             try:
                 selection = User.query.filter_by(email = email).first()
                 if selection is None:
-                    return "User does not exist"
+                    # return "User does not exist"
+                    return jsonify({'error': 'Invalid email or password'}), 401
 
                 if selection.check_password(password):
                     session["user_id"] = selection.id
@@ -177,7 +178,8 @@ def create_app(test_config=None):
                     # return redirect('/')                 
                     
                 else:
-                    print("Invalid email or password")
+                    return jsonify({'error': 'Invalid email or password'}), 401
+                    # print("Invalid email or password")
                     abort(401)
 
                 return jsonify(

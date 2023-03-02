@@ -16,6 +16,5 @@ Werkzeug
 flask_moment
 Flask-Session
 gunicorn
-
 Flask-Mail
 PyJWT
