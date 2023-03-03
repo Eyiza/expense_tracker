@@ -183,7 +183,7 @@ def create_app(test_config=None):
             
             # Create message with token and send email
             msg = Message('Password Reset Request', sender='noreply@expense.com', recipients=[email])
-            msg.body = f"Hi,\n\nPlease use the following link to reset your password:\n\nhttp://localhost:3000/Token?token={token}\n\nLink expires in 10 minutes\n\nIf you did not make this request then simply ignore this email and no changes will be made."
+            msg.body = f"Hi,\n\nPlease use the following link to reset your password:\n\nhttp://localhost:3000/Token?token={token}\n\nLink expires in 10 minutes. If you did not make this request then simply ignore this email and no changes will be made."
             mail.send(msg)
             
             return jsonify(

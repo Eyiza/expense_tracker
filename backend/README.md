@@ -113,6 +113,7 @@ The API will return the following error types when requests fail:
 }
 ```
 
+
 #### GET /logout - To logout
 - Sample URL: `curl http://127.0.0.1:5000/logout`
 - Request Arguments: None.
