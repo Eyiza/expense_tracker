@@ -23,7 +23,6 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
-    mail = Mail(app)
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
     
 

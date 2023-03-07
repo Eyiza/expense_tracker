@@ -28,7 +28,7 @@ The first time you run the tests, omit the dropdb command.
 - Authentication: This application uses [Flask Session](https://flask-session.readthedocs.io/en/latest/)  Package to handle authentication. 
 
 ### Mail Server
-This application uses Flask Mail Package to handle emails. <br>
+This application uses [Flask Mail](https://pythonhosted.org/Flask-Mail/) Package to handle emails. <br>
 Run the following commands from the /backend directory to set up the environment variables of the mailing server of your application (otherwise hard code the string ```MAIL_USERNAME``` and ```MAIL_PASSWORD``` in __init__.py file):<br> 
 For Mac/Linux
 ```
