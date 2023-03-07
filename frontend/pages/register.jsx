@@ -3,10 +3,10 @@ import React from 'react'
 import {AiOutlineEye} from 'react-icons/ai'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import Cookies from 'js-cookie';
-import fetch from 'isomorphic-unfetch';
 import { config } from './apiConfig';
 import Swal from 'sweetalert2';
+import httpClient from "./httpClient";
+
 
 function register() {
   const [inputType, setInputType] = useState('password');
@@ -39,20 +39,12 @@ function register() {
         setPasswordErrorMessage('Password must contain at least one special character')
       }
       else {
-        const response = await fetch(`${config.baseUrl}/register`, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({name, email, password})
-      })
-      const data = await response.json();
-        if (data.success) {
-          Swal.fire(data.message, 'You will be redirected shortly', 'success')
+        const response = await httpClient.post(`${config.baseUrl}/register`, {
+            name, email, password
+          });
+        if (response.data.success) {
+          Swal.fire(response.data.message, 'You will be redirected shortly', 'success')
           .then(() => {
-            Cookies.set('session_id', data.user["id"]);
-            Cookies.set('email', data.user["email"]); // set email cookie
-            // redirect to the dashboard
             setName('')
             setEmail('')
             setpassword('')
@@ -62,13 +54,13 @@ function register() {
             router.push('/Dashboard')
           })
         } else {
-          Swal.fire('Error', data.error, 'error')
+          Swal.fire('Error', response.data.error, 'warning')
         }
       }
 
     } catch (error) {
-      console.error(error);
-      Swal.fire('Oops', 'Something went wrong! Please try again later.', 'error')
+      Swal.fire('Error', error.response.data.error, 'warning');
+      // Swal.fire('Oops', 'Something went wrong! Please try again later.', 'error');
     } finally {
       setLoading(false);
     }

@@ -48,12 +48,8 @@ function Token() {
               router.push('/')
             })
           } else {
-            Swal.fire({
-              title: 'Error',
-              text: data.error,
-              icon: 'error',
-              // background: '#efe5ee',
-            }).then(() => {
+            Swal.fire('Error', data.error, 'error')
+            .then(() => {
               router.push('forgetPassword')
             })
           }
@@ -61,11 +57,7 @@ function Token() {
 
       } catch (error) {
         console.error(error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Something went wrong! Please try again later.'
-        });
+        Swal.fire('Oops', 'Something went wrong! Please try again later.', 'error');
       } finally {
         setLoading(false);
       }

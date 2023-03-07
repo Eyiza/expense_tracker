@@ -5,12 +5,9 @@ import styles from '../styles/Home.module.css'
 import {AiOutlineEye} from 'react-icons/ai'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import forgetPassword from './forgetPassword'
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import fetch from 'isomorphic-unfetch';
 import { config } from './apiConfig';
 import Swal from 'sweetalert2';
+import httpClient from "./httpClient";
 
 
 export default function Home() {
@@ -40,34 +37,28 @@ export default function Home() {
           // setPasswordErrorMessage('Please enter your password')
         }
         else {
-          const response = await fetch(`${config.baseUrl}/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({email, password})
-        })
-        const data = await response.json();
-          if (data.success) {
-            Swal.fire(data.message, 'You will be redirected shortly', 'success')
+          const response = await httpClient.post(`${config.baseUrl}/login`, {
+            email,
+            password,
+          });
+          if (response.data.success) {
+            Swal.fire(response.data.message, 'You will be redirected shortly', 'success')
             .then(() => {
-              Cookies.set('session_id', data.user["id"]);
-              Cookies.set('email', data.user["email"]); // set email cookie
-              // redirect to the dashboard
+              router.push('/Dashboard')
               setEmail('')
               setpassword('')
               setEmailErrorMessage('')
               setPasswordErrorMessage('')
-              router.push('/Dashboard')
             })
           } else {
-            Swal.fire('Error', data.error, 'error')
+            Swal.fire('Error', response.data.error, 'warning')
           }
         }
 
       } catch (error) {
         console.error(error);
-        Swal.fire('Oops', 'Something went wrong! Please try again later.', 'error')
+        Swal.fire('Error', error.response.data.error, 'warning')
+        // Swal.fire('Oops', 'Something went wrong! Please try again later.', 'error');
       } finally {
         setLoading(false);
       }

@@ -1,7 +1,7 @@
 #from crypt import methods
 import os
 from unicodedata import category
-from flask import Flask, request, redirect, abort, jsonify, session 
+from flask import Flask, request, redirect, abort, jsonify, session, make_response, Response
 from flask_session import Session
 # from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_sqlalchemy import SQLAlchemy
@@ -25,13 +25,17 @@ def create_app(test_config=None):
     app = Flask(__name__)
     mail = Mail(app)
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
-    with app.app_context():
-        setup_db(app)
+    
 
-    app.config["SESSION_PERMANENT"] = True
+    # This is the configuration for the authentication with Flask Session.
+    app.config["SESSION_PERMANENT"] = False
     app.config["SESSION_TYPE"] = "filesystem"
+    app.config["SESSION_USE_SIGNER"] = True
     app.config['PERMANENT_SESSION_LIFETIME'] = 3600 # 30 minutes
+    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+    app.config['SESSION_COOKIE_SECURE'] = True
     Session(app)
+
     # This is the configuration for the email server.
     app.config["MAIL_SERVER"] = "smtp.gmail.com"
     app.config["MAIL_PORT"] = 465
@@ -40,26 +44,27 @@ def create_app(test_config=None):
     app.config["MAIL_USE_TLS"] = False
     app.config["MAIL_USE_SSL"] = True
     app.config['MAIL_DEFAULT_SENDER'] = 'noreply@expense.com'
-
     mail = Mail(app)
+
+    with app.app_context():
+        setup_db(app)
 
     s = URLSafeTimedSerializer('SECRET_KEY')    
     
-    cors = CORS(app ,supports_credentials=True, origins=['*'])
-    # cors = CORS(app, resources={r"/api/*" : {"origins": '*'}})
+    # cors = CORS(app ,supports_credentials=True, origins=['*'])
+    cors = CORS(app, supports_credentials=True)
+
 
     # CORS Headers
     @app.after_request
     def after_request(response):
         response.headers.add(
-            "Access-Control-Allow-Headers", "Content-Type,Authorization,true"
+            "Access-Control-Allow-Headers", "Content-Type, Authorization, true"
         )
         response.headers.add(
             "Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE"
         )
-        response.headers['Access-Control-Allow-Credentials'] = 'true'
         response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-        response.headers["Expires"] = 0
         response.headers["Pragma"] = "no-cache"
         return response
 
@@ -73,28 +78,15 @@ def create_app(test_config=None):
         print(session) 
         return 'You are not logged in'      
     
-    @app.route('/logout')
-    def logout():
-        session.clear()
-        return jsonify(
-                    {
-                        "success": True,
-                        'message': 'Logout successful',
-                    }
-                )
-
 
     @app.route('/register', methods=['GET', 'POST'])
     def register():
         if request.method == 'POST':
             body = request.get_json()
-            # print(body)
 
             new_username = body.get("name")
-            # username = request.form.get('username')
             new_email = body.get("email").lower()
             new_password = body.get("password")
-            # new_password = generate_password_hash(password)
 
             try:
                 user = User(username=new_username, email=new_email, password=new_password)
@@ -107,32 +99,28 @@ def create_app(test_config=None):
 
                 session["user_id"] = user.id
                 session["email"] = user.email
-                session_id = session.sid
-                print(f'Session ID: {session_id}')
-
+                
                 return jsonify(
                     {
                         "success": True,
-                        'message': 'Account created',
-                        "user": user.format()
+                        'message': 'Account created'
                     }
                 )
 
             except IntegrityError as e:
                 print("An integrity error occurred:", e)
-                return jsonify({'error': 'User already exixts'}), 401
+                return jsonify({'error': 'User already exixts'}), 400
 
             except:
                 abort(422)
         else:
             abort(405)
     
+    @cross_origin
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         if request.method == 'POST':
             body = request.get_json()
-            # print(body)
-
             email = body.get("email").lower()
             password = body.get("password")
 
@@ -140,28 +128,20 @@ def create_app(test_config=None):
                 selection = User.query.filter_by(email = email).first()
                 if selection is None:
                     # return "User does not exist"
-                    return jsonify({'error': 'Invalid email or password'}), 401
+                    return jsonify({'error': 'Invalid email or password'}), 400
 
                 if selection.check_password(password):
                     session["user_id"] = selection.id
                     session["email"] = selection.email
-                    session['logged_in']=True
-                    # print("password is correct")
-                    print(session.items())
-                    session_id = session.sid
-                    print(f'Session ID: {session_id}')
-                    # return redirect('/')                 
                     
                 else:
-                    return jsonify({'error': 'Invalid email or password'}), 401
-                    # print("Invalid email or password")
-                    abort(401)
+                    return jsonify({'error': 'Invalid email or password'}), 400
+                    # abort(401)
 
                 return jsonify(
                         {
                             "success": True,
-                            'message': 'Login successful',
-                            "user": selection.format()
+                            'message': 'Login successful'
                         }
                     )
             
@@ -172,6 +152,16 @@ def create_app(test_config=None):
         else:
             abort(405)
 
+    @app.route('/logout')
+    def logout():
+        session.clear()
+        return jsonify(
+                    {
+                        "success": True,
+                        'message': 'Logout successful',
+                    }
+                ), 200
+        
 
     @app.route('/forgot_password', methods=['POST'])
     def forgot_password():
@@ -265,9 +255,7 @@ def create_app(test_config=None):
                     abort(404)
                 return {
                     "success": True,
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email,
+                    'user': user.format()
                     }
             except:
                 abort(405)
@@ -281,8 +269,7 @@ def create_app(test_config=None):
                 session.clear()
                 return jsonify(
                     {
-                        "success": True,
-                        "deleted": user.id
+                        "success": True
                     }
                 )
             except:

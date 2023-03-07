@@ -72,8 +72,7 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'password': self.password,
-            'time_created': self.time_created,
+            'time_created': self.time_created
             }
 
 """
@@ -133,7 +132,6 @@ class Category(db.Model):
             }
 
 def get_categories(user_id):
-    # categories = Category.query.join(UserCategory).filter(UserCategory.user_id == user_id).with_entities(Category.type).all()
     categories = Category.query.join(UserCategory).filter(UserCategory.user_id == user_id).all()
     return categories
 

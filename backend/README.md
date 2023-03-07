@@ -15,7 +15,7 @@ The first time you run the tests, omit the dropdb command.
 2. You can also test your endpoints with [Postman](https://getpostman.com).
    - Import the postman collection `./backend/tests/expense_tracker.postman_collection.json`
    - Right-clicking the collection folder, navigate to the edit tab, then the variables section and update the host variable to your running server link.
-   - Run the collection individually or collectively.
+   - Run the collection individually.
 
 
 ## API Reference
@@ -25,7 +25,7 @@ The first time you run the tests, omit the dropdb command.
 
 - Base URL: The backend app is hosted at the default, http://127.0.0.1:5000/, which is set as a proxy in the frontend configuration.
 
-- Authentication: This application uses Flask Session Package to handle authentication. 
+- Authentication: This application uses [Flask Session](https://flask-session.readthedocs.io/en/latest/)  Package to handle authentication. 
 
 ### Mail Server
 This application uses Flask Mail Package to handle emails. <br>
@@ -38,8 +38,17 @@ export MAIL_PASSWORD=password
 For Windows PowerShell, use $env: instead of export:
 ```
 $env:MAIL_USERNAME = "example@gmail.com" 
-$env:MAIL_PASSWORD = "" 
+$env:MAIL_PASSWORD = "password" 
 ``` 
+
+Google has a two-factor authentication (2FA) feature, which requires you to use an application-specific password to access your account when using a third-party application like Flask to send emails through Gmail. Therefore, you'll need to generate an application-specific password and use that password in your Flask app instead of your regular Gmail password.<br>
+Here are the steps to generate an application-specific password:
+- Go to your Google account's security page at [myaccount.google.com/security](https://myaccount.google.com/security).
+- 2-step verification must be turned on for your gmail account.
+- Scroll down to the "Signing in to Google" section and click on "App passwords".
+- Select "Mail" and "Other (custom name)" as the app and device, respectively.
+- Enter a name for the custom app password (e.g. "Flask app password") and click on "Generate".
+- Google will generate a new password for you. Copy this password and use it in your Flask app's email configuration (MAIL_PASSWORD) instead of your regular Gmail password.
 
 
 ### Error Handling
@@ -77,18 +86,11 @@ The API will return the following error types when requests fail:
 - Request Arguments: username, email, password.
 - Response body:
   - Creates a new user using the provided username, email and hashed password, then launches a session for that user using its ID.
-  - Returns the details of the created user and success value.
-  - If user already exists, it returns 'User already exist'.
+  - Returns success value and a 'Account created' message.
+  - If user already exists, it returns 'User already exists'.
 ```
 {
-  "created": {
-      "email": "joe@gmail.com",
-      "id": 1,
-      "password": "pbkdf2:sha256:260000$Sn1hxZ9C9hDAzARH$af767daea2959d22506d5beeda11b53c0e9cd8381219711ada4989f1f2f7d464",
-      "time_created": "Wed, 01 Mar 2023 11:25:25 GMT",
-      "username": "Joe"
-  },
-  "message": "User created",
+  "message": "Account created",
   "success": true
 }
 ```
@@ -98,18 +100,11 @@ The API will return the following error types when requests fail:
 - Request Arguments: email, password.
 - Response body:
   - Searches for a user using the provided email address and password, then launches a session for that user using its ID.
-  - Returns the details of the existing user and success value.
+  - Returns success value and a 'Login successful' message.
 ```
 {
   "message": "Login successful",
-  "success": true,
-  "user": {
-      "email": "joe@gmail.com",
-      "id": 1,
-      "password": "pbkdf2:sha256:260000$Sn1hxZ9C9hDAzARH$af767daea2959d22506d5beeda11b53c0e9cd8381219711ada4989f1f2f7d464",
-      "time_created": "Wed, 01 Mar 2023 01:24:58 GMT",
-      "username": "Joe"
-  }
+  "success": true
 }
 ```
 
@@ -132,13 +127,16 @@ The API will return the following error types when requests fail:
 - Request Arguments: None.
 - Response body:
   -  Retrieves the data of the user who is currently logged in using the session ID. 
-  - Returns the details of logged-in user (email, ID, username) and success value.
+  - Returns the details of logged-in user (email, ID, username, time_created) and success value.
 ```
 {
-  "email": "joe@gmail.com",
-  "id": 1,
   "success": true,
-  "username": "Joe"
+   "user": {
+      "email": "joe@gmail.com",
+      "id": 1,
+      "time_created": "Wed, 01 Mar 2023 01:24:58 GMT",
+      "username": "Joe"
+  }
 }
 ```
 
@@ -147,9 +145,8 @@ The API will return the following error types when requests fail:
 - Request Arguments: None
 - Response body:
   - Deletes the account of the user who is currently logged in using the session ID. 
-  - Returns success value and the id of the deleted user.
+  - Returns success value.
 ```{
-  "deleted": 1,
   "success": true
 }
 ```
@@ -167,7 +164,6 @@ The API will return the following error types when requests fail:
   "user": {
       "email": "joe@gmail.com",
       "id": 1,
-      "password": "pbkdf2:sha256:260000$Sn1hxZ9C9hDAzARH$af767daea2959d22506d5beeda11b53c0e9cd8381219711ada4989f1f2f7d464",
       "time_created": "Wed, 01 Mar 2023 11:42:20 GMT",
       "username": "Joe Daniel"
   }
