@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { config } from './apiConfig';
 import Swal from 'sweetalert2';
 import httpClient from "./httpClient";
+import Cookies from 'js-cookie';
+
 
 const Dashboard = () => {
   const router = useRouter();
@@ -24,10 +26,7 @@ const Dashboard = () => {
               console.log(error.response.data);
               return null;
           }
-          else {
-            console.log(error);
-          }
-         
+          console.log(error);         
         }
       })();
     }, []);

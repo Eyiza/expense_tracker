@@ -27,12 +27,13 @@ def create_app(test_config=None):
     
 
     # This is the configuration for the authentication with Flask Session.
-    app.config["SESSION_PERMANENT"] = False
+    app.config["SESSION_PERMANENT"] = True
     app.config["SESSION_TYPE"] = "filesystem"
     app.config["SESSION_USE_SIGNER"] = True
     app.config['PERMANENT_SESSION_LIFETIME'] = 3600 # 30 minutes
-    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
     app.config['SESSION_COOKIE_SECURE'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
     Session(app)
 
     # This is the configuration for the email server.
@@ -52,7 +53,6 @@ def create_app(test_config=None):
     
     # cors = CORS(app ,supports_credentials=True, origins=['*'])
     cors = CORS(app, supports_credentials=True)
-
 
     # CORS Headers
     @app.after_request
@@ -74,8 +74,23 @@ def create_app(test_config=None):
             return jsonify({
                 "Logged in": 'Logged in as ' + session['email'],
             })
-        print(session) 
-        return 'You are not logged in'      
+        return 'You are not logged in'  
+
+    @cross_origin
+    @app.route('/logout') 
+    def logout():
+        session.clear()
+        return jsonify(
+                    {
+                        "success": True,
+                        'message': 'Logout successful',
+                    }
+                ), 200  
+
+    @app.after_request
+    def after_logout(response):
+        response.set_cookie('session', value='', secure=True, samesite='None')
+        return response  
     
 
     @app.route('/register', methods=['GET', 'POST'])
@@ -150,16 +165,6 @@ def create_app(test_config=None):
 
         else:
             abort(405)
-
-    @app.route('/logout')
-    def logout():
-        session.clear()
-        return jsonify(
-                    {
-                        "success": True,
-                        'message': 'Logout successful',
-                    }
-                ), 200
         
 
     @app.route('/forgot_password', methods=['POST'])

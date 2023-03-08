@@ -59,8 +59,13 @@ function register() {
       }
 
     } catch (error) {
-      Swal.fire('Error', error.response.data.error, 'warning');
-      // Swal.fire('Oops', 'Something went wrong! Please try again later.', 'error');
+      console.error(error);
+        if (!error.response) {
+          Swal.fire('Oops', 'Something went wrong! Please try again later.', 'error');
+        }
+        else {
+          Swal.fire('Error', error.response.data.error, 'warning')
+        }   
     } finally {
       setLoading(false);
     }
