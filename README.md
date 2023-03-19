@@ -32,7 +32,7 @@ source env/bin/activate
 
 Note - In Windows, the `env` does not have a `bin` directory. Therefore, you'd use the analogous command shown below:
 ```
-source env/Scripts/activate
+env/Scripts/activate
 ```
 
 2. **PIP Dependencies** - Once the virtual environment is setup and running, install the required dependencies by navigating to the `/backend` directory on the terminal and running:
