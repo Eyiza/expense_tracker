@@ -11,7 +11,8 @@ module.exports = {
   theme: {
     extend: {
       colors:{
-        backColor: 'rbga(0,0,0,0.25)'
+        'primary': '#EB741E',
+        'secondary': '#2F71AD'
       }
     },
   },

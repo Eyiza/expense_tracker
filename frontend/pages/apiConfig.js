@@ -1,4 +1,4 @@
 
 export const config = {
-    baseUrl: 'http://127.0.0.1:5000'
+    baseUrl: 'https://expense-tracker-tmu2.onrender.com'
 }

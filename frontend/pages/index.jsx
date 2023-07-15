@@ -3,11 +3,12 @@ import Image from 'next/image'
 import Nav from '../components/Nav'
 import styles from '../styles/Home.module.css'
 import {AiOutlineEye} from 'react-icons/ai'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 import { config } from './apiConfig';
 import Swal from 'sweetalert2';
 import httpClient from "./httpClient";
+import { UserContext } from '../libs/UserContext'
 
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
   const [message, setMessage] = useState('');
   const [EmailerrorMessage, setEmailErrorMessage] = useState('');
   const [PassworderrorMessage, setPasswordErrorMessage] = useState('');
+  const { user, setUser, isLoading, setIsLoading} = useContext(UserContext);
   const router = useRouter();
   const [loading, setLoading] = useState(false)
 
@@ -44,11 +46,14 @@ export default function Home() {
           if (response.data.success) {
             Swal.fire(response.data.message, 'You will be redirected shortly', 'success')
             .then(() => {
-              router.push('/Dashboard')
+              setIsLoading(false)
               setEmail('')
               setpassword('')
               setEmailErrorMessage('')
               setPasswordErrorMessage('')
+              router.push('/Dashboard')
+              // setUser(response.data.user)
+              console.log(response.data.user)
             })
           } else {
             Swal.fire('Error', response.data.error, 'warning')
@@ -69,15 +74,16 @@ export default function Home() {
     }
 
   return (
-    <div className=''>
+    <div>
       <Head>
         <title>Expense Tracker</title>
         <meta name="description" content="To track your expenses and see your income" />
         {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
       <main className='flex flex-col justify-center items-center font-light'>
+        <h1 className='mt-20 font-bold text-4xl'>Expense Tracker</h1>
         {/* <Nav/> */}
-        <div className='bg-white shadow-lg rounded-lg px-12 pb-10 pt-4 mt-28'>
+        <div className='bg-white shadow-lg rounded-lg px-12 pb-10 pt-4 mt-10'>
             <form action="" className='flex flex-col gap-8 justify-center items-center mt-5'>
               <div className='flex flex-col'>
                 <label className='text-[#1E1E1E] text-sm mb-2 font-normal'>Email</label>

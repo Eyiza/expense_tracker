@@ -1,11 +1,12 @@
 import Head from 'next/head'
-import React from 'react'
+import React, { useContext } from 'react'
 import {AiOutlineEye} from 'react-icons/ai'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { config } from './apiConfig';
 import Swal from 'sweetalert2';
 import httpClient from "./httpClient";
+import { UserContext } from '../libs/UserContext'
 
 
 function register() {
@@ -17,6 +18,7 @@ function register() {
   const [EmailerrorMessage, setEmailErrorMessage] = useState('');
   const [PassworderrorMessage, setPasswordErrorMessage] = useState('');
   const router = useRouter();
+  const {user, setUser, isLoading, setIsLoading } = useContext(UserContext);
   const [loading, setLoading] = useState(false)
   
   const toggleInput = ()=>{
@@ -51,6 +53,8 @@ function register() {
             setNameErrorMessage('')
             setEmailErrorMessage('')
             setPasswordErrorMessage('')
+            setUser(response.data.user)
+            setIsLoading(false)
             router.push('/Dashboard')
           })
         } else {
