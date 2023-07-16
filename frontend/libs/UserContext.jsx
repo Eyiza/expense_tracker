@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
+import axios from '../apiConfig';
 
 const UserContext = createContext();
 
@@ -8,9 +9,8 @@ const UserProvider = ({ children }) => {
   useEffect(() => {
     (async () => {
       try {
-        const {data} = await httpClient.get(`${config.baseUrl}/user`);
+        const {data} = await axios.get(`/user`);
         if (data.success) {
-            console.log(data.user)
             setUser(data.user);
         } else {
             setUser(null)

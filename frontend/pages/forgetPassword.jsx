@@ -2,9 +2,7 @@ import Cookies from 'js-cookie';
 import React from 'react'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import axios from 'axios';
-import fetch from 'isomorphic-unfetch';
-import { config } from './apiConfig';
+import axios from '../apiConfig';
 import Swal from 'sweetalert2';
 
 
@@ -23,13 +21,9 @@ function forgetPassword() {
         Swal.fire('Not Yet', 'Email is required', 'warning')
       }
       else {
-        const response = await fetch(`${config.baseUrl}/forgot_password`, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({email})
-      })
+        const response = await axios.post(`/forgot_password`, {
+          email
+        });
       const data = await response.json();
         if (data.success) {
           setEmail('')

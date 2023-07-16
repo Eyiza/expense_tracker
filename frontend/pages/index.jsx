@@ -5,9 +5,8 @@ import styles from '../styles/Home.module.css'
 import {AiOutlineEye} from 'react-icons/ai'
 import { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
-import { config } from './apiConfig';
+import axios from '../apiConfig';
 import Swal from 'sweetalert2';
-import httpClient from "./httpClient";
 import { UserContext } from '../libs/UserContext'
 
 
@@ -39,7 +38,7 @@ export default function Home() {
           // setPasswordErrorMessage('Please enter your password')
         }
         else {
-          const response = await httpClient.post(`${config.baseUrl}/login`, {
+          const response = await axios.post(`/login`, {
             email,
             password,
           });

@@ -1,10 +1,7 @@
 import React from 'react'
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/router'
-import Cookies from 'js-cookie';
-import axios from 'axios';
-import fetch from 'isomorphic-unfetch';
-import { config } from './apiConfig';
+import axios from '../apiConfig';
 import Swal from 'sweetalert2';
 
 function Token() {
@@ -26,13 +23,9 @@ function Token() {
             })
         }
         else {
-          const response = await fetch(`${config.baseUrl}/reset_password`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({password, token})
-        })
+          const response = await axios.post(`/reset_password`, {
+            password, token
+          });
         const data = await response.json();
           if (data.success) {
             Swal.fire({

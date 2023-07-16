@@ -1,17 +1,19 @@
 import React from 'react'
 import Switch from './Switch'
+import { useRouter } from 'next/router'
+import axios from '../apiConfig';
+import Swal from 'sweetalert2';
 
 function Settings() {
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      await httpClient.get(`${config.baseUrl}/logout`);
+      await axios.get(`/logout`);
       router.push('/');
     } catch (error) {
       console.error(error);
-      Swal.fire('Oops', 'Something went wrong! Please try again later.', 'error')
     }
-  }
+  } 
   return (
     <div className='flex flex-col items-center justify-center mx-10 mt-10'>
        <div className='flex items-start justify-between gap-20 mb-10'>

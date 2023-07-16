@@ -3,9 +3,8 @@ import React, { useContext } from 'react'
 import {AiOutlineEye} from 'react-icons/ai'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import { config } from './apiConfig';
+import axios from '../apiConfig';
 import Swal from 'sweetalert2';
-import httpClient from "./httpClient";
 import { UserContext } from '../libs/UserContext'
 
 
@@ -41,7 +40,7 @@ function register() {
         setPasswordErrorMessage('Password must contain at least one special character')
       }
       else {
-        const response = await httpClient.post(`${config.baseUrl}/register`, {
+        const response = await axios.post(`/register`, {
             name, email, password
           });
         if (response.data.success) {

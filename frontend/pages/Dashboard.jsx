@@ -1,10 +1,6 @@
 
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from "react";
-import { config } from './apiConfig';
-import Swal from 'sweetalert2';
-import httpClient from "./httpClient";
-import Cookies from 'js-cookie';
 import Nav from '../components/Nav';
 import Sidebar from '../components/Sidebar';
 import { UserContext } from '../libs/UserContext';
