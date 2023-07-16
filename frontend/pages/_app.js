@@ -5,9 +5,8 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 
 function MyApp({ Component, pageProps }) {
   return (
-    <UserProvider>
+    
         <Component {...pageProps} />
-     </UserProvider>
      )
 }
 

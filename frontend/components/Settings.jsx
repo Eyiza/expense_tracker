@@ -1,7 +1,12 @@
 import React from 'react'
 import Switch from './Switch'
+import Swal from 'sweetalert2';
+import httpClient from '../pages/httpClient';
+import { config } from '../pages/apiConfig';
+import { useRouter } from 'next/router';
 
 function Settings() {
+  const router = useRouter();
   const handleLogout = async (e) => {
     e.preventDefault();
     try {

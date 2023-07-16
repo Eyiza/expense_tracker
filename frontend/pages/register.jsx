@@ -53,7 +53,6 @@ function register() {
             setNameErrorMessage('')
             setEmailErrorMessage('')
             setPasswordErrorMessage('')
-            setUser(response.data.user)
             setIsLoading(false)
             router.push('/Dashboard')
           })

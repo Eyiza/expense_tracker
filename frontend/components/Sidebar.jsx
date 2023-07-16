@@ -1,14 +1,16 @@
 import { useRouter } from 'next/router';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Home from './Home';
 import Profile from './Profile';
 import Settings from './Settings';
 import Expense from './Expense/Expense';
 import Income from './Income/Income';
+import httpClient from '../pages/httpClient';
+import { config } from '../pages/apiConfig';
 
 function Sidebar({home}) {
     const router = useRouter();
-
+  
   // Use state to keep track of which subpage is currently active
   const [activeSubpage, setActiveSubpage] = useState(home);
 
@@ -16,7 +18,7 @@ function Sidebar({home}) {
   let subpageContent;
   switch (activeSubpage) {
     case "home":
-      subpageContent = <Home />;
+      subpageContent = <Home user=''/>;
       break;
     // case "profile":
     //   subpageContent = <Profile />;
@@ -33,6 +35,8 @@ function Sidebar({home}) {
     default:
       subpageContent = <Home />;
   }
+ 
+ 
 
   return (
     <div className='flex sticky top-20'>

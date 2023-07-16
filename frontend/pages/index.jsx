@@ -18,7 +18,6 @@ export default function Home() {
   const [message, setMessage] = useState('');
   const [EmailerrorMessage, setEmailErrorMessage] = useState('');
   const [PassworderrorMessage, setPasswordErrorMessage] = useState('');
-  const { user, setUser, isLoading, setIsLoading} = useContext(UserContext);
   const router = useRouter();
   const [loading, setLoading] = useState(false)
 
@@ -46,14 +45,11 @@ export default function Home() {
           if (response.data.success) {
             Swal.fire(response.data.message, 'You will be redirected shortly', 'success')
             .then(() => {
-              setIsLoading(false)
               setEmail('')
               setpassword('')
               setEmailErrorMessage('')
               setPasswordErrorMessage('')
               router.push('/Dashboard')
-              // setUser(response.data.user)
-              console.log(response.data.user)
             })
           } else {
             Swal.fire('Error', response.data.error, 'warning')

@@ -12,24 +12,38 @@ import { UserContext } from '../libs/UserContext';
 
 const Dashboard = () => {
   const router = useRouter();
-  const [data, setData] = useState('');
-  const {user, isLoading } = useContext(UserContext);
+  const [datas, setData] = useState('');
+  const [user, setUser] = useState(false);
 
-  console.log(user)
+  useEffect(() => {
+   
+    (async () => {
+      try {
+        const {data} = await httpClient.get(`${config.baseUrl}/user`);
+        if (data.success) {
+            setData(data.user);
+            setUser(true)
+        } else {
+            
+        }
+      } catch (error) {
+        if (error.data == 'unauthorized') {
+            router.push('/');
+            return null;
+        }        
+      }
+    })();
+
+
+  }, []);
+  // const {user, isLoading } = useContext(UserContext);
+  console.log(!datas)
+  useEffect(() => {
+    if (user == false){
+      router.push("/")
+    }
+  }, []);
   
-  
-
-  // if (isLoading) {
-  //   return <p>Loading...</p>;
-  // }
-
-  // if (!user) {
-  //   router.push('/')
-  //   return (
-  //   <p>Please log in to view the profile.</p>
-  //   )
-  // }
-
   
   return (
     <div>
