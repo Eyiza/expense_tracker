@@ -1,12 +1,23 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
+import { UserContext } from '../libs/UserContext';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 
-function Home({user}) {
+
+
+function Home() {
+    const router = useRouter();
+  const { state, dispatch, isLoading, setIsLoading} = useContext(UserContext);
+    const {userInfo } = state;
+    // if(!userInfo && !isLoading){
+    //   return router.push('/')}
+    
   return (
     <div className='flex items-center justify-center mt-10'>
         <div>
-            <div>
+            <div className='flex flex-col items-start'>
                 <p className='text-4xl font-bold text-secondary'>Welcome</p>
-                <h5 className=' text-gray-600'>{user.name}</h5>
+                <h5 className=' text-gray-600'>{userInfo?.username}</h5>
             </div>
             <div className='flex flex-col md:flex-row items-center justify-center gap-20 mt-10'>
                 <div className='border border-secondary p-4 px-5 text-center rounded-lg '>
@@ -26,5 +37,4 @@ function Home({user}) {
     </div>
   )
 }
-
-export default Home
+export default dynamic(() => Promise.resolve(Home), {ssr: false})

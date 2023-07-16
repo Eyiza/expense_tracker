@@ -1,33 +1,32 @@
-import { createContext, useEffect, useState } from 'react';
-import httpClient from '../pages/httpClient';
+import { createContext, useEffect, useReducer, useState } from 'react';
+import Cookies from 'js-cookie';
+import axios from '../apiConfig';
+
 
 const UserContext = createContext();
 
+const  initialState = {
+  userInfo: Cookies.get('userInfo')? JSON.parse(Cookies.get('userInfo')) : null,
+};
+
+function reducer(state, action){
+  switch (action.type){
+    case "USER_LOGIN":
+      return {...state, userInfo: action.payload };
+      case "USER_LOGOUT":
+        return {...state, userInfo: null};
+    default:
+        return state;
+  }}
+
 const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const {data} = await httpClient.get(`${config.baseUrl}/user`);
-  //       if (data.success) {
-            
-  //           setUser(data.user);
-  //       } else {
-            
-  //       }
-  //     } catch (error) {
-  //       if (error.data == 'unauthorized') {
-  //           router.push('/');
-  //           console.log(error.data);
-  //           // return null;
-  //       }        
-  //     }
-  //   })();
-  // }, []);
+  
+  const [state, dispatch]  = useReducer(reducer, initialState);
+    const value = { state, dispatch, isLoading, setIsLoading};
 
   return (
-    <UserContext.Provider value={{ user, setUser, isLoading, setIsLoading }}>
+    <UserContext.Provider value={value}>
       {children}
     </UserContext.Provider>
   );

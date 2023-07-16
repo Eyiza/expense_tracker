@@ -5,9 +5,8 @@ import styles from '../styles/Home.module.css'
 import {AiOutlineEye} from 'react-icons/ai'
 import { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
-import { config } from './apiConfig';
+import axios from '../apiConfig';
 import Swal from 'sweetalert2';
-import httpClient from "./httpClient";
 import { UserContext } from '../libs/UserContext'
 
 
@@ -20,7 +19,7 @@ export default function Home() {
   const [PassworderrorMessage, setPasswordErrorMessage] = useState('');
   const router = useRouter();
   const [loading, setLoading] = useState(false)
-
+  const { state, dispatch, isLoading, setIsLoading } = useContext(UserContext);
   const toggleInput = ()=>{
     setInputType(inputType === 'password' ? 'text': 'password')
   }
@@ -38,7 +37,7 @@ export default function Home() {
           // setPasswordErrorMessage('Please enter your password')
         }
         else {
-          const response = await httpClient.post(`${config.baseUrl}/login`, {
+          const response = await axios.post(`/login`, {
             email,
             password,
           });
@@ -50,6 +49,7 @@ export default function Home() {
               setEmailErrorMessage('')
               setPasswordErrorMessage('')
               router.push('/Dashboard')
+              
             })
           } else {
             Swal.fire('Error', response.data.error, 'warning')

@@ -1,22 +1,28 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Switch from './Switch'
+
+import { useRouter } from 'next/router'
+import axios from '../apiConfig';
 import Swal from 'sweetalert2';
-import httpClient from '../pages/httpClient';
-import { config } from '../pages/apiConfig';
-import { useRouter } from 'next/router';
+import { UserContext } from '../libs/UserContext';
+import Cookies from 'js-cookie';
+
 
 function Settings() {
+  const { state, dispatch } = useContext(UserContext);
+    const {userInfo } = state;
   const router = useRouter();
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      await httpClient.get(`${config.baseUrl}/logout`);
+      await axios.get(`/logout`);
+      dispatch({ type: 'USER_LOGOUT' });
+      Cookies.remove('userInfo');
       router.push('/');
     } catch (error) {
       console.error(error);
-      Swal.fire('Oops', 'Something went wrong! Please try again later.', 'error')
     }
-  }
+  } 
   return (
     <div className='flex flex-col items-center justify-center mx-10 mt-10'>
        <div className='flex items-start justify-between gap-20 mb-10'>

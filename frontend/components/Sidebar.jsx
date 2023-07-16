@@ -5,8 +5,6 @@ import Profile from './Profile';
 import Settings from './Settings';
 import Expense from './Expense/Expense';
 import Income from './Income/Income';
-import httpClient from '../pages/httpClient';
-import { config } from '../pages/apiConfig';
 
 function Sidebar({home}) {
     const router = useRouter();

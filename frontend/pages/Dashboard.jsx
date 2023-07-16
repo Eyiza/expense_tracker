@@ -1,48 +1,62 @@
 
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from "react";
-import { config } from './apiConfig';
-import Swal from 'sweetalert2';
-import httpClient from "./httpClient";
-import Cookies from 'js-cookie';
 import Nav from '../components/Nav';
 import Sidebar from '../components/Sidebar';
 import { UserContext } from '../libs/UserContext';
+import Cookies from 'js-cookie';
+import axios from '../apiConfig';
+import dynamic from 'next/dynamic';
+
 
 
 const Dashboard = () => {
-  const router = useRouter();
-  const [datas, setData] = useState('');
-  const [user, setUser] = useState(false);
-
-  useEffect(() => {
+   const router = useRouter();
+  const { state, dispatch, isLoading, setIsLoading} = useContext(UserContext);
+    const {userInfo } = state;
    
-    (async () => {
-      try {
-        const {data} = await httpClient.get(`${config.baseUrl}/user`);
-        if (data.success) {
-            setData(data.user);
-            setUser(true)
-        } else {
-            
+    //  if(!userInfo || !isLoading){
+    //   router.push('/')}
+
+  
+   useEffect(() => {
+      (async () => {
+        try {
+          const {data} = await axios.get(`/user`);
+          if (data.success) {
+            dispatch({type: 'USER_LOGIN', payload: data.user});
+            Cookies.set('userInfo', JSON.stringify(data.user));
+              
+          } else {
+            // router.push('/');
+           
+          }
+        } catch (error) {
+          if (error.data == 'unauthorized') {
+              router.push('/');
+              // console.log(error.data);
+              
+          }        
         }
-      } catch (error) {
-        if (error.data == 'unauthorized') {
-            router.push('/');
-            return null;
-        }        
-      }
-    })();
+      })();
+    
+  },[]);
+  
 
 
-  }, []);
-  // const {user, isLoading } = useContext(UserContext);
-  console.log(!datas)
-  useEffect(() => {
-    if (user == false){
-      router.push("/")
-    }
-  }, []);
+  // const router = useRouter();
+  // const {user} = useContext(UserContext)
+
+  // console.log(user)
+  // useEffect(() => {
+  //   if (!user){
+  //     router.push("/")
+  //   }
+  // }, [user]);
+  
+  // if(isLoading){
+  //   return <p>Loading.....</p>
+  // }
   
   
   return (
@@ -54,7 +68,7 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default dynamic(() => Promise.resolve(Dashboard), {ssr: false})
 
 
 
