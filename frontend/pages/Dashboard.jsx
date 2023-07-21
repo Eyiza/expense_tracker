@@ -28,15 +28,13 @@ const Dashboard = () => {
             Cookies.set('userInfo', JSON.stringify(data.user));
               
           } else {
-            // router.push('/');
-           
+            router.push('/');
           }
         } catch (error) {
-          if (error.data == 'unauthorized') {
-              router.push('/');
-              // console.log(error.data);
-              
-          }        
+          router.push('/');  
+          // if (error.data == 'unauthorized') {
+          //     router.push('/');              
+          // }        
         }
       })();
     

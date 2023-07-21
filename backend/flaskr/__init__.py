@@ -291,11 +291,11 @@ def create_app(test_config=None):
 
             category = body.get("category")
             name = body.get("name")
-            amount = body.get("amount")
+            price = body.get("price")
 
             try:
                 category_id = Category.query.filter(Category.type == category).first().id
-                expense = Expense(user_id=session['user_id'], category_id=category_id, name=name, amount=amount)
+                expense = Expense(user_id=session['user_id'], category_id=category_id, name=name, price=price)
                 expense.insert()
 
                 return jsonify(
@@ -305,17 +305,20 @@ def create_app(test_config=None):
                     }
                 )
 
-            except:
+            except Exception as e:
+                print(e)
                 abort(422)
         else:
             try:
                 expenses = Expense.query.filter(Expense.user_id == session['user_id']).order_by(Expense.category_id).all()
                 expenses_list = [expense.format() for expense in expenses]
+                total_price = sum(expense.price for expense in expenses)
                 
                 return jsonify(
                     {
                         "success": True,
-                        "expenses": expenses_list
+                        "expenses": expenses_list,
+                        "total_price": str(total_price)
                     }
                 )
             except:
@@ -339,8 +342,8 @@ def create_app(test_config=None):
             if 'name' in body:
                 expense.name = body.get('name')
             
-            if 'amount' in body:
-                expense.amount = body.get('amount')
+            if 'price' in body:
+                expense.price = body.get('price')
 
             expense.update()
 
