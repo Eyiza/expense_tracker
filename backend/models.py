@@ -1,5 +1,6 @@
 import os
 from sqlalchemy import Column, String, Integer, create_engine, DateTime, Numeric, ForeignKey
+from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy
 import json
 from flask_migrate import Migrate
@@ -147,14 +148,17 @@ class Expense(db.Model):
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     category_id = Column(Integer, ForeignKey('categories.id', ondelete='CASCADE'), nullable=False)
     name = Column(String, nullable=False)
-    amount = Column(Numeric(15, 2), nullable=False)
+    price = Column(Numeric(15, 2), nullable=False)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
 
-    def __init__(self, user_id, category_id, name, amount):
+    category = relationship("Category", backref="expenses", lazy="joined")
+
+
+    def __init__(self, user_id, category_id, name, price):
         self.user_id = user_id
         self.category_id = category_id
         self.name = name
-        self.amount = amount
+        self.price = price
         self.time_created
 
     def insert(self):
@@ -173,8 +177,9 @@ class Expense(db.Model):
             'id': self.id,
             'user_id': self.user_id,
             'category_id': self.category_id,
+            'category_name': self.category.type,
             'name': self.name,
-            'amount': self.amount,
+            'price': self.price,
             'time_created': self.time_created
             }
 
@@ -188,12 +193,12 @@ class Income(db.Model):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    amount = Column(Numeric(15, 6), nullable=False)
+    price = Column(Numeric(15, 6), nullable=False)
     date = Column(DateTime(timezone=True), server_default=func.now())
 
-    def __init__(self, user_id, amount):
+    def __init__(self, user_id, price):
         self.user_id = user_id
-        self.amount = amount
+        self.price = price
         self.date
 
     def insert(self):
@@ -211,6 +216,6 @@ class Income(db.Model):
         return {
             'id': self.id,
             'user_id': self.user_id,
-            'amount': self.amount,
+            'price': self.price,
             'date': self.date
             }

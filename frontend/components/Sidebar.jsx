@@ -6,7 +6,7 @@ import Settings from './Settings';
 import Expense from './Expense/Expense';
 import Income from './Income/Income';
 
-function Sidebar({home}) {
+function Sidebar({home, user, darkMode}) {
     const router = useRouter();
   
   // Use state to keep track of which subpage is currently active
@@ -16,7 +16,7 @@ function Sidebar({home}) {
   let subpageContent;
   switch (activeSubpage) {
     case "home":
-      subpageContent = <Home user=''/>;
+      subpageContent = <Home user={user}/>;
       break;
     // case "profile":
     //   subpageContent = <Profile />;
@@ -37,8 +37,8 @@ function Sidebar({home}) {
  
 
   return (
-    <div className='flex sticky top-20'>
-        <div className='px-5 lg:px-20 flex flex-col items-start gap-10 py-10 h-[100vh] lg:w-[300px] w-[140px] md relative bg-white shadow-lg'>
+    <div className={`flex sticky top-20`}>
+        <div className={`px-5 lg:px-20 flex flex-col items-start gap-10 py-10 h-[100vh] lg:w-[300px] w-[140px] md relative shadow-lg ${darkMode?'bg-[#1a202c] text-[#f0f0f0]': 'bg-white text-black'}`}>
         <button onClick={() => setActiveSubpage("home")} className={`${activeSubpage=='home'? 'border-b-2 border-primary transition-transform duration-150 ease-in-out ': ''}`}>Home</button>
         <button onClick={() => setActiveSubpage("Expense")} className={`${activeSubpage=='Expense'? 'border-b-2 border-primary transition-transform duration-150 ease-in-out': ''}`}>Expense</button>
         <button onClick={() => setActiveSubpage("Income")} className={`${activeSubpage=='Income'? 'border-b-2 border-primary transition-transform duration-150 ease-in-out': ''}`} >Income</button>

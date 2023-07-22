@@ -20,8 +20,8 @@ export default function Home() {
   const [PassworderrorMessage, setPasswordErrorMessage] = useState('');
   const router = useRouter();
   const [loading, setLoading] = useState(false)
-  const { state, dispatch, isLoading, setIsLoading} = useContext(UserContext);
-    const {userInfo } = state;
+  const { isLoading, setIsLoading} = useContext(UserContext);
+
   
   const toggleInput = ()=>{
     setInputType(inputType === 'password' ? 'text': 'password')
@@ -50,9 +50,9 @@ export default function Home() {
               setpassword('')
               setEmailErrorMessage('')
               setPasswordErrorMessage('')
-              dispatch({type: 'USER_LOGIN', payload: response.data.user});
-              Cookies.set('userInfo', JSON.stringify(response.data.user));
-              router.push("/Dashboard")
+              // dispatch({type: 'USER_LOGIN', payload: response.data.user});
+              // Cookies.set('userInfo', JSON.stringify(response.data.user));
+              // router.push("/Dashboard")
             })
           } else {
             Swal.fire('Error', response.data.error, 'warning')
