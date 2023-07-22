@@ -14,27 +14,28 @@ const Dashboard = () => {
    const router = useRouter();
   const { state, dispatch, isLoading, setIsLoading} = useContext(UserContext);
     const {userInfo } = state;
-   
-    //  if(!userInfo || !isLoading){
-    //   router.push('/')}
-
   
    useEffect(() => {
+    if(!userInfo || isLoading){
+      router.push('/')
+      return <p>Loading....</p>
+    }
       (async () => {
         try {
           const {data} = await axios.get(`/user`);
           if (data.success) {
             dispatch({type: 'USER_LOGIN', payload: data.user});
             Cookies.set('userInfo', JSON.stringify(data.user));
+            setIsLoading(false)
               
           } else {
             // router.push('/');
+            setIsLoading(false)
            
           }
         } catch (error) {
           if (error.data == 'unauthorized') {
               router.push('/');
-              // console.log(error.data);
               
           }        
         }
@@ -54,9 +55,9 @@ const Dashboard = () => {
   //   }
   // }, [user]);
   
-  // if(isLoading){
-  //   return <p>Loading.....</p>
-  // }
+  
+  
+  
   
   
   return (

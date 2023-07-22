@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import axios from '../apiConfig';
 import Swal from 'sweetalert2';
 import { UserContext } from '../libs/UserContext'
+import Cookies from 'js-cookie'
 
 
 export default function Home() {
@@ -19,7 +20,9 @@ export default function Home() {
   const [PassworderrorMessage, setPasswordErrorMessage] = useState('');
   const router = useRouter();
   const [loading, setLoading] = useState(false)
-  const { state, dispatch, isLoading, setIsLoading } = useContext(UserContext);
+  const { state, dispatch, isLoading, setIsLoading} = useContext(UserContext);
+    const {userInfo } = state;
+  
   const toggleInput = ()=>{
     setInputType(inputType === 'password' ? 'text': 'password')
   }
@@ -27,7 +30,6 @@ export default function Home() {
   const LoginToApp = async (e) => {
       e.preventDefault();
       try {
-        setLoading(true);
         if (email.length == 0){
           // setEmailErrorMessage('Please enter your email')
           Swal.fire('Not Yet', 'Please enter an email', 'warning')
@@ -48,8 +50,9 @@ export default function Home() {
               setpassword('')
               setEmailErrorMessage('')
               setPasswordErrorMessage('')
-              router.push('/Dashboard')
-              
+              dispatch({type: 'USER_LOGIN', payload: response.data.user});
+              Cookies.set('userInfo', JSON.stringify(response.data.user));
+              router.push("/Dashboard")
             })
           } else {
             Swal.fire('Error', response.data.error, 'warning')
@@ -65,7 +68,7 @@ export default function Home() {
           Swal.fire('Error', error.response.data.error, 'warning')
         }        
       } finally {
-        setLoading(false);
+        router.push('/Dashboard')
       }
     }
 

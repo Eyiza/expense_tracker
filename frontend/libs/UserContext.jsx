@@ -20,7 +20,7 @@ function reducer(state, action){
   }}
 
 const UserProvider = ({ children }) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   
   const [state, dispatch]  = useReducer(reducer, initialState);
     const value = { state, dispatch, isLoading, setIsLoading};
