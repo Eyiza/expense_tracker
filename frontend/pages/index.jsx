@@ -30,6 +30,7 @@ export default function Home() {
   const LoginToApp = async (e) => {
       e.preventDefault();
       try {
+        setLoading(true);
         if (email.length == 0){
           // setEmailErrorMessage('Please enter your email')
           Swal.fire('Not Yet', 'Please enter an email', 'warning')
@@ -52,7 +53,7 @@ export default function Home() {
               setPasswordErrorMessage('')
               // dispatch({type: 'USER_LOGIN', payload: response.data.user});
               // Cookies.set('userInfo', JSON.stringify(response.data.user));
-              // router.push("/Dashboard")
+              router.push("/Dashboard")
             })
           } else {
             Swal.fire('Error', response.data.error, 'warning')
@@ -68,7 +69,8 @@ export default function Home() {
           Swal.fire('Error', error.response.data.error, 'warning')
         }        
       } finally {
-        router.push('/Dashboard')
+        // router.push('/Dashboard')
+        setLoading(false);
       }
     }
 

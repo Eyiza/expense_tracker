@@ -19,7 +19,7 @@ const Dashboard = () => {
     //   router.push('/')
     //   return <p>Loading....</p>
     // }
-   useEffect(() => {
+   useEffect(() => { 
       (async () => {
         try {
           const {data} = await axios.get(`/user`);
@@ -40,23 +40,10 @@ const Dashboard = () => {
       })();
     
   },[]);
-  
 
-
-  // const router = useRouter();
-  // const {user} = useContext(UserContext)
-
-  // console.log(user)
-  // useEffect(() => {
-  //   if (!user){
-  //     router.push("/")
-  //   }
-  // }, [user]);
-  
-  
-  
-  
-  
+  useEffect(() => {
+    console.log('UserContext updated:', userInfo);
+  }, [userInfo]);
   
   return (
     <div className={`${darkMode?'bg-[#1a202c] text-[#f0f0f0]': ''}`}>

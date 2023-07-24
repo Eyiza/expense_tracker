@@ -48,14 +48,14 @@ function Settings() {
           });
           if (response.data.success) {
             Swal.fire('', 'User Updated', 'success')
-            .then(() => {                
-                router.push('/Dashboard')
+            .then(() => {         
+              dispatch({ type: 'USER_UPDATE', payload: response.data.user });       
+              router.push('/Dashboard')
             })
           } else {
             Swal.fire('Error', response.data.error, 'warning')
           }
         }
-
       } catch (error) {
         console.error(error);
         if (!error.response) {
