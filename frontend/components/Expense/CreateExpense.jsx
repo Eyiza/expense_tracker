@@ -27,8 +27,9 @@ function CreateExpense({ onExpenseCreated, darkMode }) {
           Swal.fire('Not Yet', 'All fields are required', 'warning')
         }
         else {
+            let category = selectedOption
           const response = await axios.post(`/expenses`, {
-            name, selectedOption, price
+            name, category, price
           });
           if (response.data.success) {
             Swal.fire('', 'Expense Added', 'success')
@@ -37,6 +38,7 @@ function CreateExpense({ onExpenseCreated, darkMode }) {
                 setCategory('')
                 setPrice('')
                 onExpenseCreated()
+                setSelectedOption('Select an option')
                 router.push('/Dashboard')
             })
           } else {

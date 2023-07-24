@@ -74,7 +74,7 @@ function Settings() {
             </div>
             
             <div>
-              <button onClick={handleLogout} className='px-20 py-2 bg-red-600 rounded-lg text-white cursor-pointer font-medium'>Deactive</button>
+              <button onClick={handleLogout} className='px-20 py-2 bg-red-600 rounded-lg text-white cursor-pointer font-medium'>Deactivate</button>
             </div>
             
      

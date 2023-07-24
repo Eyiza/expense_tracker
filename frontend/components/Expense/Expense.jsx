@@ -7,15 +7,13 @@ import Swal from 'sweetalert2';
 import { UserContext } from '../../libs/UserContext';
 
 
-// import { UserContext } from '../libs/UserContext';
-// import Cookies from 'js-cookie';
-// import dynamic from 'next/dynamic';
-
 function Expense() {
     const [drop, setDrop] = useState(false)
     const { state, dispatch, isLoading, setIsLoading, darkMode} = useContext(UserContext);
     const [editDrop, seteditDrop] = useState(false)
     const [expenses, setExpenses] = useState([]);
+    const [selectedExpense, setSelectedExpense] = useState(null); 
+
 
     const handleDrop = ()=> {
         setDrop(!drop)
@@ -48,19 +46,11 @@ function Expense() {
         }
     }
 
-    const handleExpenseCreated = async () => {
-        try {
-          const response = await axios.get('/expenses');
-          if (response.data.success) {
-            setExpenses(response.data.expenses);
-          } else {
-            // Handle the error if necessary
-            
-          }
-        } catch (error) {
-            console.error(error)
-        }
-      };
+    const handleEditExpense = (expense) => {
+        setSelectedExpense(expense); 
+        seteditDrop(true); 
+    };
+
 
     const deleteExpense = async (id) => {
         try {
@@ -83,45 +73,25 @@ function Expense() {
     <div className='mt-10 mx-20'>
         <div>
             <div className='flex items-center justify-between gap-20 mb-10'>
-                <p className='text-4xl font-bold text-secondary'>{drop?'Add Expense':'Expense'}</p>
-                {editDrop? (<button onClick={removeDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>x</button>): 
-                 (
-                    <button onClick={handleDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>+</button>
-                 )}
+                <p className='text-4xl font-bold text-secondary'>{drop ? 'Add Expense' : 'Expense'}</p>
+                {editDrop ? (
+                    <button onClick={removeDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
+                    x
+                    </button>
+                ) : (
+                    <button onClick={handleDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
+                    +
+                    </button>
+                )}
             </div>
-            {!expenses?(
+            {expenses.length !== 0 ?(
                 <div className={`${drop? 'hidden': 'block'} ${editDrop? 'hidden': 'block'}`}>
                 <div className='flex items-center gap-28 mb-10 border-b pb-5'>
                     <p>Name</p>
                     <p>Categories</p>
                     <p>Price</p>
                 </div>
-                <div className=''>
-                    {/* <div className='flex items-center justify-between cursor-pointer mb-10'>
-                        <div className='flex items-center gap-28'>
-                            <p>Apple</p>
-                            <p>Industrys</p>
-                            <p>N10,000</p>
-                        </div>
-                        <div className='flex items-center gap-10'>
-                            <button onClick={editHandleDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>Edit</button>
-                            <button className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>Delete</button>
-                        </div>
-                    </div>
-                    <div className='flex items-center justify-between cursor-pointer'>
-                        <div className='flex items-center gap-28'>
-                            <p>Apple</p>
-                            <p>Industrys</p>
-                            <p>N10,000</p>
-                        </div>
-                        <div className='flex items-center gap-10'>
-                            <button onClick={editHandleDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>Edit</button>
-                            <button className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>Delete</button>
-                        </div>
-                    </div> */}
-
-                
-                    
+                <div className=''>                    
                     {expenses?.map((expense) => (
                         <div key={expense.id} className='flex items-center justify-between cursor-pointer mb-10'>
                             <div className='flex items-center gap-28'>
@@ -130,7 +100,7 @@ function Expense() {
                                 <p>N{expense.price}</p>
                             </div>
                             <div className='flex items-center gap-10'>
-                                <button onClick={editHandleDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
+                                <button onClick={() => handleEditExpense(expense)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
                                     Edit
                                 </button>
                                 <button onClick={() => deleteExpense(expense.id)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
@@ -156,9 +126,11 @@ function Expense() {
             )} */}
             {drop && <CreateExpense onExpenseCreated={fetchExpenses} darkMode={darkMode} />}
 
-            {editDrop&& (
+            {editDrop && (
                 <div className={`${drop?'hidden': 'block'}`}>
-                    <EditExpense/>
+                    {/* <EditExpense /> */}
+                    <EditExpense expense={selectedExpense} onExpenseUpdated={fetchExpenses} />
+                    {/* <EditExpense expense={expenseData} onExpenseUpdated={fetchExpenses} /> */}
                 </div>
                 
             )}
