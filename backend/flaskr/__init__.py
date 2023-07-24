@@ -232,8 +232,8 @@ def create_app(test_config=None):
                 if user is None:
                     abort(404)
 
-                if 'username' in body:
-                    user.username = body.get('username')
+                if 'name' in body:
+                    user.username = body.get('name')
 
                 if 'password' in body:
                     user.password = generate_password_hash(body.get('password'))
