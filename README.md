@@ -108,4 +108,4 @@ Update the [apiConfig](./frontend/pages/apiConfig.js) file to include your runni
 ## Deployment N/A
 
 ## Authors
-Precious Michael, John Asaolu
+Precious Michael, John Ashaolu
