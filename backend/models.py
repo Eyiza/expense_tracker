@@ -8,6 +8,7 @@ from sqlalchemy import create_engine, Sequence
 from sqlalchemy.sql import func
 # from sqlalchemy.orm import sessionmaker
 from werkzeug.security import check_password_hash, generate_password_hash
+from helper import convert_currency
 
 
 
@@ -78,6 +79,28 @@ class User(db.Model):
             'base_currency': self.base_currency,
             'time_created': self.time_created
             }
+    
+    # def update_base_currency(self, new_base_currency):
+    #     if self.base_currency == new_base_currency:
+    #         return
+
+    #     old_base_currency = self.base_currency
+    #     self.base_currency = new_base_currency
+    #     db.session.commit()
+
+    #     # Update expenses
+    #     expenses = Expense.query.filter_by(user_id=self.id)
+    #     for expense in expenses:
+    #         expense.price = convert_currency(expense.price, old_base_currency, new_base_currency)
+    #         db.session.add(expense)
+
+    #     # Update incomes
+    #     incomes = Income.query.filter_by(user_id=self.id)
+    #     for income in incomes:
+    #         income.price = convert_currency(income.price, old_base_currency, new_base_currency)
+    #         db.session.add(income)
+
+    #     db.session.commit()
 
 """
 Category
@@ -152,18 +175,19 @@ class Expense(db.Model):
     category_id = Column(Integer, ForeignKey('categories.id', ondelete='CASCADE'), nullable=False)
     name = Column(String, nullable=False)
     price = Column(Numeric(15, 2), nullable=False)
-    currency_code = Column(String(3), nullable=False) 
+    # currency_code = Column(String(3), nullable=False) 
     time_created = Column(DateTime(timezone=True), server_default=func.now())
 
     category = relationship("Category", backref="expenses", lazy="joined")
 
 
-    def __init__(self, user_id, category_id, name, price, currency_code):
+    def __init__(self, user_id, category_id, name, price):
         self.user_id = user_id
         self.category_id = category_id
         self.name = name
         self.price = price
-        self.currency_code = currency_code
+        # self.price = convert_currency(price, currency_code, User.query.get(user_id).base_currency)
+        # self.currency_code = currency_code
         self.time_created
 
     def insert(self):
@@ -171,6 +195,8 @@ class Expense(db.Model):
         db.session.commit()
 
     def update(self):
+        # base_currency = User.query.get(self.user_id).base_currency
+        # self.price = convert_currency(self.price, self.currency_code, base_currency)
         db.session.commit()
 
     def delete(self):
@@ -185,7 +211,7 @@ class Expense(db.Model):
             'category_name': self.category.type,
             'name': self.name,
             'price': str(self.price),
-            'currency_code': self.currency_code,
+            # 'currency_code': self.currency_code,
             'time_created': self.time_created
             }
 
@@ -201,14 +227,15 @@ class Income(db.Model):
     name = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     price = Column(Numeric(15, 6), nullable=False)
-    currency_code = Column(String(3), nullable=False)
+    # currency_code = Column(String(3), nullable=False)
     date = Column(DateTime(timezone=True), server_default=func.now())
 
-    def __init__(self, user_id, name, price, currency_code):
+    def __init__(self, user_id, name, price):
         self.user_id = user_id
         self.name = name
         self.price = price
-        self.currency_code = currency_code
+        # self.price = convert_currency(price, currency_code, User.query.get(user_id).base_currency)
+        # self.currency_code = currency_code
         self.date
 
     def insert(self):
@@ -216,6 +243,8 @@ class Income(db.Model):
         db.session.commit()
 
     def update(self):
+        # base_currency = User.query.get(self.user_id).base_currency
+        # self.price = convert_currency(self.price, self.currency_code, base_currency)
         db.session.commit()
 
     def delete(self):
@@ -228,6 +257,6 @@ class Income(db.Model):
             'user_id': self.user_id,
             'name': self.name,
             'price': str(self.price),
-            'currency_code': self.currency_code,
+            # 'currency_code': self.currency_code,
             'date': self.date
             }

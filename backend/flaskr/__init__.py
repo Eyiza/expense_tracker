@@ -11,7 +11,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
 import random
-from models import setup_db, User, Expense, Category,UserCategory, Income, db, get_categories
+from models import setup_db, User, Expense, Category, UserCategory, Income, db, get_categories
 from auth import login_required, AuthError
 from flask_mail import Mail, Message
 import random
@@ -107,7 +107,7 @@ def create_app(test_config=None):
                 user = User(username=new_username, email=new_email, password=new_password)
                 user.insert()
 
-                categories = list(range(1, 12))
+                categories = list(range(1, 18))
                 for category_id in categories:
                     user_category = UserCategory(category_id=category_id, user_id=user.id)
                     user_category.insert()
@@ -126,7 +126,8 @@ def create_app(test_config=None):
                 print("An integrity error occurred:", e)
                 return jsonify({'error': 'User already exixts'}), 400
 
-            except:
+            except Exception as e:
+                print(e)
                 abort(422)
         else:
             abort(405)
@@ -283,6 +284,39 @@ def create_app(test_config=None):
         else:
             abort(405)
     
+
+    @app.route('/change_currency', methods=['PATCH'])
+    @login_required
+    def change_currency():
+        if request.method == 'PATCH':
+            body = request.get_json()
+            currency_code = body.get("currency_code")
+            
+            try:
+                user = User.query.filter(User.id == session['user_id']).one_or_none()
+                if user is None:
+                    abort(404)
+
+                # user.update_base_currency(currency_code)
+                user.base_currency = currency_code
+
+                updatedUser = User.query.filter(User.id == session['user_id']).first()
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "user": updatedUser.format()
+                    }
+                )
+
+            except Exception as e:
+                print(e)
+                abort(404)
+
+        else:
+            abort(405)
+
+
     @app.route('/expenses', methods=['GET', 'POST'])
     @login_required
     def expenses():
@@ -293,6 +327,7 @@ def create_app(test_config=None):
             category = body.get("category")
             name = body.get("name")
             price = body.get("price")
+            # currency_code = body.get("currency_code")
 
             try:
                 category_id = Category.query.filter(Category.type == category).first().id
