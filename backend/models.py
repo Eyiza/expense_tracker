@@ -45,13 +45,15 @@ class User(db.Model):
     username = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
+    base_currency = Column(String(3), nullable=False, default='NGN')
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     # time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, base_currency='NGN'):
         self.username = username
         self.email = email
         self.password = generate_password_hash(password)
+        self.base_currency = base_currency
         self.time_created
 
     def insert(self):
@@ -73,6 +75,7 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'email': self.email,
+            'base_currency': self.base_currency,
             'time_created': self.time_created
             }
 
@@ -149,16 +152,18 @@ class Expense(db.Model):
     category_id = Column(Integer, ForeignKey('categories.id', ondelete='CASCADE'), nullable=False)
     name = Column(String, nullable=False)
     price = Column(Numeric(15, 2), nullable=False)
+    currency_code = Column(String(3), nullable=False) 
     time_created = Column(DateTime(timezone=True), server_default=func.now())
 
     category = relationship("Category", backref="expenses", lazy="joined")
 
 
-    def __init__(self, user_id, category_id, name, price):
+    def __init__(self, user_id, category_id, name, price, currency_code):
         self.user_id = user_id
         self.category_id = category_id
         self.name = name
         self.price = price
+        self.currency_code = currency_code
         self.time_created
 
     def insert(self):
@@ -179,7 +184,8 @@ class Expense(db.Model):
             'category_id': self.category_id,
             'category_name': self.category.type,
             'name': self.name,
-            'price': self.price,
+            'price': str(self.price),
+            'currency_code': self.currency_code,
             'time_created': self.time_created
             }
 
@@ -192,13 +198,17 @@ class Income(db.Model):
     __tablename__ = 'income'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     price = Column(Numeric(15, 6), nullable=False)
+    currency_code = Column(String(3), nullable=False)
     date = Column(DateTime(timezone=True), server_default=func.now())
 
-    def __init__(self, user_id, price):
+    def __init__(self, user_id, name, price, currency_code):
         self.user_id = user_id
+        self.name = name
         self.price = price
+        self.currency_code = currency_code
         self.date
 
     def insert(self):
@@ -216,6 +226,8 @@ class Income(db.Model):
         return {
             'id': self.id,
             'user_id': self.user_id,
-            'price': self.price,
+            'name': self.name,
+            'price': str(self.price),
+            'currency_code': self.currency_code,
             'date': self.date
             }

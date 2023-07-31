@@ -443,6 +443,95 @@ def create_app(test_config=None):
         except:
             abort(422)
 
+    @app.route('/incomes', methods=['GET', 'POST'])
+    @login_required
+    def incomes():
+        if request.method == 'POST':
+            body = request.get_json()
+            
+            name = body.get("name")
+            price = body.get("price")
+
+            try:
+                income = Income(user_id=session['user_id'], price=price, name=name)
+                income.insert()
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "created": income.format()
+                    }
+                )
+
+            except Exception as e:
+                print(e)
+                abort(422)
+                
+        else:
+            try:
+                incomes = Income.query.filter(Income.user_id == session['user_id']).all()
+                incomes_list = [income.format() for income in incomes]
+                total_price = sum(income.price for income in incomes)
+                
+                return jsonify(
+                    {
+                        "success": True,
+                        "incomes": incomes_list,
+                        "total_price": str(total_price)
+                    }
+                )
+            except:
+                abort(405)
+
+    @app.route('/incomes/<int:id>', methods=['PATCH'])
+    @login_required
+    def update_income(id):
+        body = request.get_json()
+        
+        try:
+            income = Income.query.filter(Income.id == id and Income.user_id == session['user_id']).one_or_none()
+            if income is None:
+                abort(404)
+
+            if 'name' in body:
+                income.name = body.get('name')
+            
+            if 'price' in body:
+                income.price = body.get('price')
+
+            income.update()
+
+            updatedIncome = Income.query.filter(Income.id == id).first()
+
+            return jsonify(
+                {
+                    "success": True,
+                    "income": updatedIncome.format()
+                }
+            )
+
+        except:
+            abort(404)
+
+    @app.route("/incomes/<int:id>", methods=["DELETE"])
+    @login_required
+    def delete_income(id):
+        try:    
+            income = Income.query.filter(Income.id == id and User.id == session['user_id']).one_or_none()
+
+            if income is None:
+                abort(404)
+
+            income.delete()
+            return jsonify(
+                {
+                    "success": True,
+                    "deleted": id,
+                }
+            )
+
+        except:
+            abort(422)
 
     @app.errorhandler(400)
     def bad_request(error):
