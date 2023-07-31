@@ -24,12 +24,12 @@ function forgetPassword() {
         const response = await axios.post(`/forgot_password`, {
           email
         });
-      const data = await response.json();
-        if (data.success) {
+      // const data = await response.json();
+        if (response.data.success) {
           setEmail('')
           router.push('mailsent')
         } else {
-          Swal.fire('Error', data.error, 'error')
+          Swal.fire('Error', response.data.error, 'error')
         }
       }
 

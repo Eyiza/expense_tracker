@@ -26,11 +26,10 @@ function Token() {
           const response = await axios.post(`/reset_password`, {
             password, token
           });
-        const data = await response.json();
-          if (data.success) {
+          if (response.data.success) {
             Swal.fire({
               title: 'Password updated',
-              text: data.message,
+              text: response.data.message,
               icon: 'success',
               // background: '#efe5ee',
               // showConfirmButton: true,
@@ -41,7 +40,7 @@ function Token() {
               router.push('/')
             })
           } else {
-            Swal.fire('Error', data.error, 'error')
+            Swal.fire('Error', response.data.error, 'error')
             .then(() => {
               router.push('forgetPassword')
             })
