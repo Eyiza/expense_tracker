@@ -23,7 +23,6 @@ function CreateExpense({ onExpenseCreated, darkMode }) {
       try {
         setLoading(true);
         if (name.length == 0 || selectedOption == 'Select an option' || price == 0){
-          // setEmailErrorMessage('Please enter your email')
           Swal.fire('Not Yet', 'All fields are required', 'warning')
         }
         else {
@@ -68,26 +67,6 @@ function CreateExpense({ onExpenseCreated, darkMode }) {
             </div>
             <div className='flex gap-20 items-center justify-around'>
               <CustomSelect darkMode={darkMode} options={options} defaultValue={defaultValue} selectedOption={selectedOption} setSelectedOption={setSelectedOption}/>
-                {/* <input type="text" name="name" id="name" className='border outline-none px-4 py-2 rounded-lg'/>
-                 */}
-                 {/* <select name="categories" value={category} onChange={(e) => setCategory(e.target.value)} id="categories" className={`border outline-none px-4 py-2 w-[218px] rounded-lg ${darkMode?'text-black': 'text-gray-600'}`}>
-                    <option value="">Select a category</option>
-                    <option value="Groceries">Groceries</option>
-                    <option value="Gifts">Gifts</option>
-                    <option value="Transportation">Transportation</option>
-                    <option value="Personal Care">Personal Care</option>
-                    <option value="Housing">Housing</option>
-                    <option value="Utilities">Utilities</option>
-                    <option value="Shopping">Shopping</option>
-                    <option value="Education">Education</option>
-                    <option value="Entertainment">Entertainment</option>
-                    <option value="Pet Expenses">Pet Expenses</option>
-                    <option value="Food and Dining">Food and Dining</option>
-                    <option value="Subscriptions and Memberships">Subscriptions and Memberships</option>
-                    <option value="Savings and Investments">Savings and Investments</option>
-                    <option value="Miscellaneous">Miscellaneous</option>
-                    <option value="Others">Others</option>
-                 </select> */}
             </div>
             <div className='flex gap-20 items-center  justify-around'>
                 <input type="number" value={price} placeholder='Price' onChange={(e) => setPrice(e.target.value)} name="price" id="price" className={`border outline-none px-4 py-2 appearance-none rounded-lg ${darkMode?'text-black placeholder:text-black':''}`}/>

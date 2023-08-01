@@ -8,7 +8,7 @@ from sqlalchemy import create_engine, Sequence
 from sqlalchemy.sql import func
 # from sqlalchemy.orm import sessionmaker
 from werkzeug.security import check_password_hash, generate_password_hash
-from helper import convert_currency
+from helper import convert_currency, currency_symbol
 
 
 
@@ -77,6 +77,7 @@ class User(db.Model):
             'username': self.username,
             'email': self.email,
             'base_currency': self.base_currency,
+            'currency_symbol': currency_symbol(self.base_currency),
             'time_created': self.time_created
             }
     
@@ -174,7 +175,7 @@ class Expense(db.Model):
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     category_id = Column(Integer, ForeignKey('categories.id', ondelete='CASCADE'), nullable=False)
     name = Column(String, nullable=False)
-    price = Column(Numeric(15, 2), nullable=False)
+    price = Column(Numeric(15, 1), nullable=False)
     # currency_code = Column(String(3), nullable=False) 
     time_created = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -226,7 +227,7 @@ class Income(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    price = Column(Numeric(15, 6), nullable=False)
+    price = Column(Numeric(15, 1), nullable=False)
     # currency_code = Column(String(3), nullable=False)
     date = Column(DateTime(timezone=True), server_default=func.now())
 

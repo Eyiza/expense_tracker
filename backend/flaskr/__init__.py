@@ -263,7 +263,8 @@ def create_app(test_config=None):
                     "success": True,
                     'user': user.format()
                     }
-            except:
+            except Exception as e:
+                print(e)
                 abort(405)
         
         elif request.method == 'DELETE':
@@ -299,6 +300,7 @@ def create_app(test_config=None):
 
                 # user.update_base_currency(currency_code)
                 user.base_currency = currency_code
+                user.update()
 
                 updatedUser = User.query.filter(User.id == session['user_id']).first()
 

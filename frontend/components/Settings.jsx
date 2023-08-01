@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import Switch from './Switch'
 
 import { useRouter } from 'next/router'
@@ -18,7 +18,7 @@ function Settings() {
 
   const [name, setName] = useState(userInfo?.username)
   const [email, setEmail] = useState(userInfo?.email)
-  const [selectedOption, setSelectedOption] = useState(defaultValue);
+  const [selectedOption, setSelectedOption] = useState(userInfo?.base_currency);
   
   const router = useRouter();
 
@@ -68,6 +68,22 @@ function Settings() {
         setLoading(false);
       }
     }
+
+
+  const changeCurrency = async (currencyCode) => {
+    try {
+      const response = await axios.patch(`/change_currency`, { currency_code: currencyCode });
+      dispatch({ type: 'USER_UPDATE', payload: response.data.user });       
+      console.log('Currency updated')
+      } catch (error) {
+        console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    changeCurrency(selectedOption)
+  }, [selectedOption]);
+    
     
     const deleteUser = async (e) => {
       e.preventDefault();
@@ -138,7 +154,13 @@ function Settings() {
             </div>
             <div>
               <h6 className='text-lg font-medium mb-5'>Currency</h6>
-              <CustomSelect darkMode={darkMode} defaultValue={defaultValue} options={currencies} selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
+              <CustomSelect 
+                darkMode={darkMode} 
+                defaultValue={defaultValue} 
+                options={currencies} 
+                selectedOption={selectedOption} 
+                setSelectedOption={setSelectedOption} 
+              />
             </div>
             <div>
               <button onClick={handleLogout} className='px-20 py-2 bg-secondary rounded-lg text-white cursor-pointer font-medium'>Logout</button>

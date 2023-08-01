@@ -9,6 +9,7 @@ function EditExpense({ expense, onExpenseUpdated }) {
     const defaultValue = 'Select an option';
     const [selectedOption, setSelectedOption] = useState(defaultValue);
     const { state, dispatch, isLoading, setIsLoading, darkMode} = useContext(UserContext);
+    const [loading, setLoading] = useState(false)
 
     const [name, setName] = useState(expense.name);
     const [category, setCategory] = useState(expense.category_name);
@@ -17,6 +18,7 @@ function EditExpense({ expense, onExpenseUpdated }) {
     const handleEditExpense = async (e) => {
         e.preventDefault();
         try {
+          setLoading(true);
           const response = await axios.patch(`/expenses/${expense.id}`, {
             name,
             category,
@@ -32,7 +34,9 @@ function EditExpense({ expense, onExpenseUpdated }) {
         } catch (error) {
           console.error(error);
           Swal.fire('Error', 'Something went wrong! Please try again later.', 'error');
-        }
+        } finally {
+          setLoading(false);
+      }
     };
     return (
     <div className='transition-transform duration-200 ease-in'>
@@ -66,7 +70,10 @@ function EditExpense({ expense, onExpenseUpdated }) {
             />
             </div>
             <div className='text-center my-10'>
-                <button onClick={handleEditExpense} className='px-10 w-1/2 py-2 bg-primary rounded-lg text-white font-medium' type="submit">Edit</button>
+                {/* <button onClick={handleEditExpense} className='px-10 w-1/2 py-2 bg-primary rounded-lg text-white font-medium' type="submit">Edit</button> */}
+                <button type="submit" onClick={handleEditExpense} disabled={loading} className='px-20 py-2 bg-primary rounded-lg text-white font-medium button'>
+                  {loading ? <> <span className="spinner" /> Please wait... </> : 'Edit'}
+                </button>
             </div>
             
         </form>

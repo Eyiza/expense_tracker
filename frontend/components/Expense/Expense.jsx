@@ -10,6 +10,7 @@ import { UserContext } from '../../libs/UserContext';
 function Expense() {
     const [drop, setDrop] = useState(false)
     const { state, dispatch, isLoading, setIsLoading, darkMode} = useContext(UserContext);
+    const {userInfo } = state;
     const [editDrop, seteditDrop] = useState(false)
     const [expenses, setExpenses] = useState([]);
     const [selectedExpense, setSelectedExpense] = useState(null); 
@@ -97,7 +98,7 @@ function Expense() {
                             <div className='flex items-center gap-28'>
                                 <p>{expense.name}</p>
                                 <p>{expense.category_name}</p>
-                                <p>N{expense.price}</p>
+                                <p>{userInfo?.currency_symbol}{expense.price}</p>
                             </div>
                             <div className='flex items-center gap-10'>
                                 <button onClick={() => handleEditExpense(expense)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>

@@ -1,10 +1,12 @@
 import os
 import requests
-from babel.numbers import format_currency
+from babel.numbers import get_currency_symbol
 
-def format_currency(amount, currency_code):
-    formatted_amount = format_currency(amount, currency_code)
-    return formatted_amount
+def currency_symbol(currency_code):
+    if currency_code == 'NGN':
+        locale = 'en_NG'
+        return get_currency_symbol('NGN', locale=locale)
+    return get_currency_symbol(currency_code)
 
 
 def convert_currency(amount, from_currency, to_currency):
