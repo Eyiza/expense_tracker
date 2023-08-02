@@ -7,9 +7,10 @@ import Swal from 'sweetalert2';
 import { UserContext } from '../../libs/UserContext';
 
 
-function Expense() {
+function Expense({data}) {
+    console.log(data)
     const [drop, setDrop] = useState(false)
-    const { state, dispatch, isLoading, setIsLoading, darkMode} = useContext(UserContext);
+    const { state, dispatch, darkMode} = useContext(UserContext);
     const {userInfo } = state;
     const [editDrop, seteditDrop] = useState(false)
     const [expenses, setExpenses] = useState([]);
@@ -28,7 +29,10 @@ function Expense() {
     }
 
     useEffect(() => {
-        fetchExpenses();
+        if (typeof window !== 'undefined') {
+            fetchExpenses();
+          }
+        
     }, []);
 
     const fetchExpenses = async () => {
@@ -81,13 +85,62 @@ function Expense() {
                     </button>
                 ) : (
                     <button onClick={handleDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
-                    +
+                    {drop?'x':'+'}
                     </button>
                 )}
             </div>
+            
             {expenses.length !== 0 ?(
                 <div className={`${drop? 'hidden': 'block'} ${editDrop? 'hidden': 'block'}`}>
-                <div className='flex items-center gap-28 mb-10 border-b pb-5'>
+                <table class="table-auto">
+                    <thead className='mb-10'>
+                        <tr className='border-b '>
+                        <th class="px-4 py-2">Name</th>
+                        <th class="px-4 py-2">Categories</th>
+                        <th class="px-4 py-2">Price</th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+
+                        
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {expenses?.map((expense) => (
+                                <tr key={expense.id}>
+                                <td class=" px-4 py-2">{expense.name}</td>
+                                <td class=" px-4 py-2">{expense.category_name}</td>
+                                <td class=" px-4 py-2">{userInfo?.currency_symbol}{expense.price}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class=" px-4 py-2"><button onClick={() => handleEditExpense(expense)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
+                                    Edit
+                                </button></td>
+                                <td class=" px-4 py-2"> <button onClick={() => deleteExpense(expense.id)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
+                                    Delete
+                                </button></td>
+
+                                </tr>
+                        ))}
+                        
+                        
+                        
+
+                    </tbody>
+                </table>
+                {/* <div className='flex items-center gap-28 mb-10 border-b pb-5'>
                     <p>Name</p>
                     <p>Categories</p>
                     <p>Price</p>
@@ -110,7 +163,7 @@ function Expense() {
                             </div>
                         </div>
                     ))}
-                </div>
+                </div> */}
             </div>
             ) : (
                 <div>
@@ -140,5 +193,7 @@ function Expense() {
     </div>
   )
 }
+
+
 
 export default Expense

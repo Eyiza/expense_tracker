@@ -49,7 +49,7 @@ function Settings() {
           if (response.data.success) {
             Swal.fire('', 'User Updated', 'success')
             .then(() => {   
-              dispatch({ type: 'USER_UPDATE', payload: response.data.user }); 
+              dispatch({ type: 'USER_LOGIN', payload: response.data.user }); 
               setName(response.data.user.username);
               setEmail(response.data.user.email); 
               router.push('/Dashboard')
@@ -75,7 +75,7 @@ function Settings() {
   const changeCurrency = async (currencyCode) => {
     try {
       const response = await axios.patch(`/change_currency`, { currency_code: currencyCode });
-      dispatch({ type: 'USER_UPDATE', payload: response.data.user }); 
+      dispatch({ type: 'USER_LOGIN', payload: response.data.user }); 
       setSelectedOption(response.data.user.base_currency); // Update selectedOption state
       console.log('Currency updated')
       } catch (error) {
@@ -135,7 +135,7 @@ function Settings() {
                       <input type="text" name="username" placeholder='Username' id="username" value={name} onChange={(e) => setName(e.target.value)} className='border placeholder:text-black text-black outline-none px-4 py-2 rounded-lg'/>
                   </div> 
                   <div className='flex flex-row items-center gap-10 justify-around'>
-                      <input type="email" name="email" id="email" value={email} placeholder='Email' onChange={(e) => setEmail(e.target.value)}  className='border placeholder:text-black text-black outline-none px-4 py-2 rounded-lg'/>
+                      <input type="email" readOnly name="email" id="email" value={email} placeholder='Email' onChange={(e) => setEmail(e.target.value)}  className='border placeholder:text-black text-black outline-none px-4 py-2 rounded-lg'/>
                   </div> 
                   
                   <div className='text-center my-5'>
