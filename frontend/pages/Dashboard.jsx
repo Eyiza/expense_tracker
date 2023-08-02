@@ -42,7 +42,8 @@ const Dashboard = () => {
   },[]);
 
   useEffect(() => {
-    console.log('UserContext updated:', userInfo);
+    // console.log('UserContext updated:', userInfo);
+    console.log('UserContext updated');
   }, [userInfo]);
   
   return (

@@ -48,8 +48,10 @@ function Settings() {
           });
           if (response.data.success) {
             Swal.fire('', 'User Updated', 'success')
-            .then(() => {         
-              dispatch({ type: 'USER_UPDATE', payload: response.data.user });       
+            .then(() => {   
+              dispatch({ type: 'USER_UPDATE', payload: response.data.user }); 
+              setName(response.data.user.username);
+              setEmail(response.data.user.email); 
               router.push('/Dashboard')
             })
           } else {
@@ -73,7 +75,8 @@ function Settings() {
   const changeCurrency = async (currencyCode) => {
     try {
       const response = await axios.patch(`/change_currency`, { currency_code: currencyCode });
-      dispatch({ type: 'USER_UPDATE', payload: response.data.user });       
+      dispatch({ type: 'USER_UPDATE', payload: response.data.user }); 
+      setSelectedOption(response.data.user.base_currency); // Update selectedOption state
       console.log('Currency updated')
       } catch (error) {
         console.error(error);
