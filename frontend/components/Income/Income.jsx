@@ -73,35 +73,59 @@ function Income() {
                  <p className='text-4xl font-bold text-secondary'>{drop?'Add Income':'Income'}</p>
                  {editDrop? (<button onClick={removeDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>x</button>): 
                  (
-                    <button onClick={handleDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>+</button>
+                    <button onClick={handleDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>{drop?'x':'+'}</button>
                  )}
               
           </div>
 
           {incomes.length !== 0 ?(
                 <div className={`${drop? 'hidden': 'block'} ${editDrop? 'hidden': 'block'}`}>
-                <div className='flex items-center gap-28 mb-10 border-b pb-5'>
-                    <p>Name</p>
-                    <p>Price</p>
-                </div>
-                <div className=''>                    
-                    {incomes?.map((income) => (
-                        <div key={income.id} className='flex items-center justify-between cursor-pointer mb-10'>
-                            <div className='flex items-center gap-28'>
-                                <p>{income.name}</p>
-                                <p>{userInfo?.currency_symbol}{income.price}</p>
-                            </div>
-                            <div className='flex items-center gap-10'>
-                                <button onClick={() => handleEditIncome(income)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
+                <table class="table-auto">
+                    <thead className='mb-10'>
+                        <tr className='border-b '>
+                        <th class="px-4 py-2">Name</th>
+                        <th class="px-4 py-2">Price</th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2"></th>
+
+                        
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {incomes?.map((income) => (
+                                <tr key={expense.id}>
+                                <td class=" px-4 py-2">{income.name}</td>
+                                <td class=" px-4 py-2">{userInfo?.currency_symbol}{income.price}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class=" px-4 py-2"><button onClick={() => handleEditExpense(income)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
                                     Edit
-                                </button>
-                                <button onClick={() => deleteIncome(income.id)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
+                                </button></td>
+                                <td class=" px-4 py-2"> <button onClick={() => deleteExpense(income.id)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
                                     Delete
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                                </button></td>
+
+                                </tr>
+                        ))}
+                        
+                        
+                        
+
+                    </tbody>
+                </table>
             </div>
             ) : (
                 <div>
