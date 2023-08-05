@@ -73,12 +73,12 @@ function CreateExpense({ onExpenseCreated, darkMode }) {
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} name="name" id="name" className={`border outline-none px-4 py-2 rounded-lg ${darkMode?'text-black placeholder:text-black': 'text-gray-600'}`}/>
             </div> 
             <div className='flex flex-row items-center gap-10 justify-around'>
-                <label htmlFor="">Price:</label>
-                <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} name="price" id="price" className={`border outline-none px-4 py-2 appearance-none rounded-lg ${darkMode?'text-black placeholder:text-black':''}`}/>
-            </div>
-            <div className='flex flex-row items-center gap-10 justify-around'>
               <label htmlFor="">Category:</label>
               <CustomSelect darkMode={darkMode} options={options} defaultValue={defaultValue} selectedOption={selectedOption} setSelectedOption={setSelectedOption}/>
+            </div>
+            <div className='flex flex-row items-center gap-10 justify-around'>
+                <label htmlFor="">Price:</label>
+                <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} name="price" id="price" className={`border outline-none px-4 py-2 appearance-none rounded-lg ${darkMode?'text-black placeholder:text-black':''}`}/>
             </div>
             {/* <div className='flex gap-20 items-center  justify-around'>
                 <input type="number" value={price} placeholder='Price' onChange={(e) => setPrice(e.target.value)} name="price" id="price" className={`border outline-none px-4 py-2 appearance-none rounded-lg ${darkMode?'text-black placeholder:text-black':''}`}/>
