@@ -100,7 +100,7 @@ function Income() {
                     </thead>
                     <tbody>
                         {incomes?.map((income) => (
-                                <tr key={expense.id}>
+                                <tr key={income.id}>
                                 <td class=" px-4 py-2">{income.name}</td>
                                 <td class=" px-4 py-2">{userInfo?.currency_symbol}{income.price}</td>
                                 <td></td>
@@ -111,10 +111,10 @@ function Income() {
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td class=" px-4 py-2"><button onClick={() => handleEditExpense(income)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
+                                <td class=" px-4 py-2"><button onClick={() => handleEditIncome(income)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
                                     Edit
                                 </button></td>
-                                <td class=" px-4 py-2"> <button onClick={() => deleteExpense(income.id)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
+                                <td class=" px-4 py-2"> <button onClick={() => deleteIncome(income.id)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
                                     Delete
                                 </button></td>
 

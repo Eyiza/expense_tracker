@@ -18,6 +18,8 @@ import random
 import string
 from datetime import datetime, timedelta
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+from decimal import Decimal
+
 
 
 def create_app(test_config=None):
@@ -298,9 +300,9 @@ def create_app(test_config=None):
                 if user is None:
                     abort(404)
 
-                # user.update_base_currency(currency_code)
-                user.base_currency = currency_code
-                user.update()
+                # user.base_currency = currency_code
+                # user.update()
+                user.update_base_currency(currency_code)
 
                 updatedUser = User.query.filter(User.id == session['user_id']).first()
 
@@ -324,16 +326,16 @@ def create_app(test_config=None):
     def expenses():
         if request.method == 'POST':
             body = request.get_json()
-            # print(body)
+            print(body.get("currency_code"))
 
             category = body.get("category")
             name = body.get("name")
-            price = body.get("price")
-            # currency_code = body.get("currency_code")
+            price = Decimal(body.get("price"))
+            currency_code = body.get("currency_code")
 
             try:
                 category_id = Category.query.filter(Category.type == category).first().id
-                expense = Expense(user_id=session['user_id'], category_id=category_id, name=name, price=price)
+                expense = Expense(user_id=session['user_id'], category_id=category_id, name=name, price=price, currency_code=currency_code)
                 expense.insert()
 
                 return jsonify(
@@ -381,7 +383,10 @@ def create_app(test_config=None):
                 expense.name = body.get('name')
             
             if 'price' in body:
-                expense.price = body.get('price')
+                expense.price = Decimal(body.get("price"))
+            
+            if 'currency_code' in body:
+                expense.currency_code = body.get('currency_code')
 
             expense.update()
 
@@ -394,7 +399,8 @@ def create_app(test_config=None):
                 }
             )
 
-        except:
+        except Exception as e:
+            print(e)
             abort(404)
 
     @app.route("/expenses/<int:id>", methods=["DELETE"])
@@ -487,10 +493,11 @@ def create_app(test_config=None):
             body = request.get_json()
             
             name = body.get("name")
-            price = body.get("price")
+            price = Decimal(body.get("price"))
+            currency_code = body.get("currency_code")
 
             try:
-                income = Income(user_id=session['user_id'], price=price, name=name)
+                income = Income(user_id=session['user_id'], price=price, name=name, currency_code=currency_code)
                 income.insert()
 
                 return jsonify(
@@ -534,7 +541,10 @@ def create_app(test_config=None):
                 income.name = body.get('name')
             
             if 'price' in body:
-                income.price = body.get('price')
+                income.price = Decimal(body.get("price"))
+
+            if 'currency_code' in body:
+                income.currency_code = body.get('currency_code')
 
             income.update()
 
@@ -547,7 +557,8 @@ def create_app(test_config=None):
                 }
             )
 
-        except:
+        except Exception as e:
+            print(e)
             abort(404)
 
     @app.route("/incomes/<int:id>", methods=["DELETE"])

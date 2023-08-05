@@ -7,22 +7,28 @@ import Swal from 'sweetalert2';
 function EditExpense({ expense, onExpenseUpdated }) {
     const options = ["Groceries","Gifts","Transportation", "Personal Care", "Housing", "Utilities", "Shopping" , "Education" , "Entertainment", "Pet Expenses", "Food and Dining", "Subscriptions and Memberships" , "Savings and Investments", "Miscellaneous", "Others" ]
     const defaultValue = 'Select an option';
+    const currencies = ['NGN', 'USD', 'EUR', 'GBP', 'JPY', 'CAD' ];
+    const defaultCurrency = 'NGN';
     const [selectedOption, setSelectedOption] = useState(defaultValue);
     const { state, dispatch, isLoading, setIsLoading, darkMode} = useContext(UserContext);
     const [loading, setLoading] = useState(false)
 
     const [name, setName] = useState(expense.name);
     const [category, setCategory] = useState(expense.category_name);
-    const [price, setPrice] = useState(expense.price);
+    const [price, setPrice] = useState(expense.initial_price);
+    const [currency, setCurrency] = useState(expense.currency_code);
+
   
     const handleEditExpense = async (e) => {
         e.preventDefault();
         try {
           setLoading(true);
+          let currency_code = currency
           const response = await axios.patch(`/expenses/${expense.id}`, {
             name,
             category,
-            price
+            price,
+            currency_code
           });
     
           if (response.data.success) {
@@ -40,15 +46,13 @@ function EditExpense({ expense, onExpenseUpdated }) {
     };
     return (
     <div className='transition-transform duration-200 ease-in'>
-        <form action="" className='flex-col items-center justify-center gap-10'>
-            <div className='flex items-start justify-around'>
+        <form action="" className='flex flex-col items-center justify-center gap-10'>
+            <div className='flex flex-row items-center gap-10 justify-around'>
+                <label htmlFor="">Name:</label>
                 <input type="text" name="name" value={name} onChange={(e) => setName(e.target.value)} id="name"  placeholder='Name' className={`border outline-none px-4 py-2 rounded-lg ${darkMode?'text-black placeholder:text-black': 'text-gray-600'}`}/>
             </div>
-            <div className='flex items-start justify-around my-10'>
-                
-                {/* <input type="text" name="name" id="name" className='border outline-none px-4 py-2 rounded-lg'/>
-                 */}
-                 {/* <CustomSelect darkMode={darkMode} options={options} defaultValue={defaultValue} selectedOption={selectedOption} setSelectedOption={setSelectedOption}/> */}
+            <div className='flex flex-row items-center gap-10 justify-around'>
+            <label htmlFor="">Category:</label>
                  <CustomSelect
                     darkMode={darkMode}
                     options={options}
@@ -57,7 +61,9 @@ function EditExpense({ expense, onExpenseUpdated }) {
                     setSelectedOption={setCategory}
                 />
             </div>
-            <div className='flex items-start justify-around'>
+            
+            <div className='flex flex-row items-center gap-10 justify-around'>
+            <label htmlFor="">Price:</label>
             {/* <input type="number" value="price" placeholder='Price'  name="price" id="price" className={`border outline-none px-4 py-2 appearance-none rounded-lg ${darkMode?'text-black placeholder:text-black':''}`}/> */}
             <input
                 type="number"
@@ -68,6 +74,19 @@ function EditExpense({ expense, onExpenseUpdated }) {
                 id="price"
                 className={`border outline-none px-4 py-2 appearance-none rounded-lg ${darkMode ? 'text-black placeholder:text-black' : ''}`}
             />
+            </div>
+            <div className='flex flex-row items-center gap-10 justify-around'>
+                <label htmlFor="">Currency:</label>
+                {/* <input type="text" name="name" id="name" className='border outline-none px-4 py-2 rounded-lg'/>
+                 */}
+                 {/* <CustomSelect darkMode={darkMode} options={options} defaultValue={defaultValue} selectedOption={selectedOption} setSelectedOption={setSelectedOption}/> */}
+                 <CustomSelect
+                    darkMode={darkMode}
+                    options={currencies}
+                    defaultValue={defaultCurrency}
+                    selectedOption={currency}
+                    setSelectedOption={setCurrency}
+                />
             </div>
             <div className='text-center my-10'>
                 {/* <button onClick={handleEditExpense} className='px-10 w-1/2 py-2 bg-primary rounded-lg text-white font-medium' type="submit">Edit</button> */}

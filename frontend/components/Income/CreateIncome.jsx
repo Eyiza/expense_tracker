@@ -3,11 +3,15 @@ import { useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 import axios from '../../apiConfig';
 import Swal from 'sweetalert2';
+import CustomSelect from '../CustomSelect'
 
 function CreateIncome({ onIncomeCreated, darkMode }) {
 
     const [name, setName] = useState("")
     const [price, setPrice] = useState(0)
+    const defaultCurrency = 'NGN';
+    const currencies = ['NGN', 'USD', 'EUR', 'GBP', 'JPY', 'CAD' ];
+    const [selectedCurrency, setSelectedCurrency] = useState(defaultCurrency);
     const router = useRouter();
     const [loading, setLoading] = useState(false)
 
@@ -19,15 +23,17 @@ function CreateIncome({ onIncomeCreated, darkMode }) {
                 Swal.fire('Not Yet', 'All fields are required', 'warning')
             }
             else {
+                let currency_code = selectedCurrency
                 const response = await axios.post(`/incomes`, {
-                    name, price
+                    name, price, currency_code
                 });
                 if (response.data.success) {
                     Swal.fire('', 'Income Added', 'success')
                     .then(() => {
+                        onIncomeCreated()
                         setName('')
                         setPrice('')
-                        onIncomeCreated()
+                        setSelectedCurrency(defaultCurrency)
                         router.push('/Dashboard')
                     })
                 } else {
@@ -62,6 +68,16 @@ function CreateIncome({ onIncomeCreated, darkMode }) {
                 <label htmlFor="">Price:</label>
                 {/* <input type="text" name="price" id="price" value={price} placeholder='Price' onChange={(e) => setPrice(e.target.value)} className='border outline-none px-4 py-2 rounded-lg'/> */}
                 <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} name="price" id="price" className={`border outline-none px-4 py-2 appearance-none rounded-lg ${darkMode?'text-black placeholder:text-black':''}`}/>
+            </div>
+            <div className='flex flex-row items-center gap-10 justify-around'>
+                <label htmlFor="">Currency:</label>
+                <CustomSelect 
+                    darkMode={darkMode} 
+                    defaultValue={defaultCurrency} 
+                    options={currencies} 
+                    selectedOption={selectedCurrency} 
+                    setSelectedOption={setSelectedCurrency} 
+                />
             </div>
             <div className='text-center my-10'>
                 {/* <button className='px-20 py-2 bg-primary rounded-lg text-white font-medium' type="submit">Create</button> */}

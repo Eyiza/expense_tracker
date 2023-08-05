@@ -2,19 +2,24 @@ import React, {useState, useContext} from 'react'
 import { UserContext } from '../../libs/UserContext';
 import axios from '../../apiConfig';
 import Swal from 'sweetalert2';
+import CustomSelect from '../CustomSelect'
 
 function EditIncome({income, onIncomeUpdated}) {
     const { state, dispatch, isLoading, setIsLoading, darkMode} = useContext(UserContext);
+    const currencies = ['NGN', 'USD', 'EUR', 'GBP', 'JPY', 'CAD' ];
+    const defaultCurrency = 'NGN';
     const [name, setName] = useState(income.name);
-    const [price, setPrice] = useState(income.price);
+    const [price, setPrice] = useState(income.initial_price);
+    const [currency, setCurrency] = useState(income.currency_code);
     const [loading, setLoading] = useState(false)
 
     const handleEditIncome = async (e) => {
         e.preventDefault();
         try {
             setLoading(true);
+            let currency_code = currency
             const response = await axios.patch(`/incomes/${income.id}`, {
-                name, price
+                name, price, currency_code
             });
             if (response.data.success) {
                 Swal.fire('', 'Income Updated', 'success');
@@ -53,6 +58,16 @@ function EditIncome({income, onIncomeUpdated}) {
                 className={`border outline-none px-4 py-2 appearance-none rounded-lg ${darkMode ? 'text-black placeholder:text-black' : ''}`}
             />
             </div>
+            <div className='flex flex-row items-center gap-10 justify-around'>
+                <label htmlFor="">Currency:</label>
+                <CustomSelect
+                    darkMode={darkMode}
+                    options={currencies}
+                    defaultValue={defaultCurrency}
+                    selectedOption={currency}
+                    setSelectedOption={setCurrency}
+                />
+            </div> 
             <div className='text-center my-10'>
                 {/* <button className='px-20 py-2 bg-primary rounded-lg text-white font-medium' type="submit">Edit</button> */}
                 <button type="submit" onClick={handleEditIncome} disabled={loading} className='px-20 py-2 bg-primary rounded-lg text-white font-medium button'>
