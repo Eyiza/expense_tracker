@@ -47,7 +47,7 @@ const Dashboard = () => {
   }, [userInfo]);
   
   return (
-    <div className={`${darkMode?'bg-[#1a202c] text-[#f0f0f0]': ''}`}>
+    <div className={`${darkMode?'bg-[#1a202c] text-[#f0f0f0]': 'sticky'}`}>
       {/* <p>{user.email}</p> */}
       <Nav darkMode={darkMode}/>
       <Sidebar home='home' darkMode={darkMode}/>

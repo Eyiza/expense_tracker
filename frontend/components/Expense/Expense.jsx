@@ -5,14 +5,15 @@ import { useRouter } from 'next/router'
 import axios from '../../apiConfig';
 import Swal from 'sweetalert2';
 import { UserContext } from '../../libs/UserContext';
+import LoadingScreen from "../../libs/LoadingScreen"
 
 
-function Expense({data}) {
-    console.log(data)
+function Expense() {
     const [drop, setDrop] = useState(false)
     const { state, dispatch, darkMode} = useContext(UserContext);
     const {userInfo } = state;
     const [editDrop, seteditDrop] = useState(false)
+    const [isLoading, setisLoading] = useState(true)
     const [expenses, setExpenses] = useState([]);
     const [selectedExpense, setSelectedExpense] = useState(null); 
 
@@ -29,9 +30,11 @@ function Expense({data}) {
     }
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            fetchExpenses();
-          }
+        fetchExpenses()
+        setisLoading(false)
+        // if (typeof window !== 'undefined') {
+        //     fetchExpenses();
+        //   }
         
     }, []);
 
@@ -39,7 +42,7 @@ function Expense({data}) {
         try {
             const response = await axios.get(`/expenses`);
             if (response.data.success) {
-                setExpenses(response.data.expenses);
+                setExpenses(response.data.expenses);  
             }
             else {
                 console.log(response)
@@ -90,7 +93,9 @@ function Expense({data}) {
                 )}
             </div>
             
-            {expenses.length !== 0 ?(
+            {isLoading?<LoadingScreen/>:
+            <>
+            {expenses.length > 0 ?(
                 <div className={`${drop? 'hidden': 'block'} ${editDrop? 'hidden': 'block'}`}>
                 <table class="table-auto">
                     <thead className='mb-10'>
@@ -106,9 +111,6 @@ function Expense({data}) {
                         <th class="px-4 py-2"></th>
                         <th class="px-4 py-2"></th>
                         <th class="px-4 py-2"></th>
-
-                        
-
                         </tr>
                     </thead>
                     <tbody>
@@ -171,6 +173,9 @@ function Expense({data}) {
                 </div>
             )}
             
+            </>
+            
+            }
 
             {/* {drop&& (
                 <div>

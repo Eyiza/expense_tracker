@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import { UserContext } from '../libs/UserContext';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import ExpenseGraph from '../components/Graphs/ExpenseGraph'
 
 
 
@@ -11,9 +12,21 @@ function Home() {
     const {userInfo } = state;
     // if(!userInfo && !isLoading){
     //   return router.push('/')}
+
+    const expenses = [
+        { id: 4, date: '2023-08-16', amount: 80 },
+        { id: 4, date: '2023-08-15', amount: 60 },
+        { id: 4, date: '2023-08-17', amount: 60 },
+        { id: 4, date: '2023-09-17', amount: 20 },
+        { id: 4, date: '2023-09-18', amount: 30 },
+        
+        
+        // Add more expense data here
+      ];
     
   return (
-    <div className='flex items-center justify-center mt-10'>
+    <div>
+        <div className='flex items-center justify-center my-10'>
         <div>
             <div className='flex flex-col items-start'>
                 <p className='text-4xl font-bold text-secondary'>Welcome</p>
@@ -35,6 +48,13 @@ function Home() {
             </div>
         </div>
     </div>
+
+    <div>
+        <ExpenseGraph expenses={expenses}/>
+
+    </div>
+    </div>
+    
   )
 }
 export default dynamic(() => Promise.resolve(Home), {ssr: false})
