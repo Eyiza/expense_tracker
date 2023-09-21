@@ -7,9 +7,8 @@ function Expenses() {
     const { state, dispatch, isLoading, setIsLoading, darkMode} = useContext(UserContext);
     const {userInfo } = state;
   return (
-    <div className={`${darkMode?'bg-[#1a202c] text-[#f0f0f0]': ''}`}>
+    <div className={`${darkMode?'bg-[#1a202c] text-[#f0f0f0] h-[100vh]': ''}`}>
       {/* <p>{user.email}</p> */}
-      <Nav darkMode={darkMode}/>
       <Sidebar home='home' darkMode={darkMode}/>
     </div>
   )

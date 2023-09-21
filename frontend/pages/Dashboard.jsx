@@ -7,6 +7,7 @@ import { UserContext } from '../libs/UserContext';
 import Cookies from 'js-cookie';
 import axios from '../apiConfig';
 import dynamic from 'next/dynamic';
+import LoadingScreen from '../libs/LoadingScreen';
 
 
 
@@ -15,9 +16,9 @@ const Dashboard = () => {
   const { state, dispatch, isLoading, setIsLoading, darkMode} = useContext(UserContext);
     const {userInfo } = state;
     
-    // if(!userInfo || isLoading){
+    // if(!userInfo){
     //   router.push('/')
-    //   return <p>Loading....</p>
+    //   return <LoadingScreen/>
     // }
    useEffect(() => { 
       (async () => {
@@ -49,7 +50,7 @@ const Dashboard = () => {
   return (
     <div className={`${darkMode?'bg-[#1a202c] text-[#f0f0f0]': 'sticky'}`}>
       {/* <p>{user.email}</p> */}
-      <Nav darkMode={darkMode}/>
+      
       <Sidebar home='home' darkMode={darkMode}/>
     </div>
   );

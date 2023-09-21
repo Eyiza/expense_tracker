@@ -108,7 +108,7 @@ const ExpenseGraph = ({expenses}) => {
     };
   
     return (
-      <div className="container mx-auto text-center mt-8 relative">
+      <div className=" mt-8 relative">
         <div className="mb-4 absolute top-20 right-0">
             {calendar && (
                 <Calendar
@@ -148,7 +148,7 @@ const ExpenseGraph = ({expenses}) => {
          
         </div>
   
-        <div className={`${darkMode?'bg-[#1a202c] text-white': 'bg-white'}  p-4 rounded-lg shadow-md`}>
+        <div className={`${darkMode?'bg-[#1a202c] text-white': 'bg-white'}  p-4`}>
           <h2 className="text-lg font-semibold mb-4">
             {viewMode === 'monthly' ? 'Monthly Expenses' : 'Weekly Expenses'} for{' '}
             {selectedMonth.toLocaleString('default', { month: 'long' })}{' '}

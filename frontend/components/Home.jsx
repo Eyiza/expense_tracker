@@ -25,7 +25,7 @@ function Home() {
       ];
     
   return (
-    <div>
+    <div className=''>
         <div className='flex items-center justify-center my-10'>
         <div>
             <div className='flex flex-col items-start'>
