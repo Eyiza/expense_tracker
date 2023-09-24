@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import Column, String, Integer, create_engine, DateTime, Numeric, ForeignKey
+from sqlalchemy import Column, String, Integer, create_engine, DateTime, Date, Numeric, ForeignKey
 from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy
 import json
@@ -178,18 +178,20 @@ class Expense(db.Model):
     initial_price = Column(Numeric(15, 1), nullable=False)
     price = Column(Numeric(15, 1), nullable=False)
     currency_code = Column(String(3), nullable=False) 
+    date = Column(Date, nullable=False)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
 
     category = relationship("Category", backref="expenses", lazy="joined")
 
 
-    def __init__(self, user_id, category_id, name, price, currency_code):
+    def __init__(self, user_id, category_id, name, price, currency_code, date):
         self.user_id = user_id
         self.category_id = category_id
         self.name = name
         self.initial_price = price
         self.price = convert_currency(price, currency_code, User.query.get(user_id).base_currency)
         self.currency_code = currency_code
+        self.date = date
         self.time_created
 
     def insert(self):
@@ -215,6 +217,7 @@ class Expense(db.Model):
             'initial_price': self.initial_price,
             'price': str(self.price),
             'currency_code': self.currency_code,
+            'date': self.date,
             'time_created': self.time_created
             }
 
@@ -232,15 +235,18 @@ class Income(db.Model):
     initial_price = Column(Numeric(15, 1), nullable=False)
     price = Column(Numeric(15, 1), nullable=False)
     currency_code = Column(String(3), nullable=False)
-    date = Column(DateTime(timezone=True), server_default=func.now())
+    date = Column(Date, nullable=False)
+    time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
 
-    def __init__(self, user_id, name, price, currency_code):
+    def __init__(self, user_id, name, price, currency_code, date):
         self.user_id = user_id
         self.name = name
         self.initial_price = price
         self.price = convert_currency(price, currency_code, User.query.get(user_id).base_currency)
         self.currency_code = currency_code
-        self.date
+        self.date = date
+        self.time_created
 
     def insert(self):
         db.session.add(self)
@@ -263,5 +269,6 @@ class Income(db.Model):
             'initial_price': self.initial_price,
             'price': str(self.price),
             'currency_code': self.currency_code,
-            'date': self.date
+            'date': self.date,
+            'time_created': self.time_created
             }

@@ -326,16 +326,17 @@ def create_app(test_config=None):
     def expenses():
         if request.method == 'POST':
             body = request.get_json()
-            print(body.get("currency_code"))
 
             category = body.get("category")
             name = body.get("name")
             price = Decimal(body.get("price"))
             currency_code = body.get("currency_code")
+            date = body.get("date")
+            print(date)
 
             try:
                 category_id = Category.query.filter(Category.type == category).first().id
-                expense = Expense(user_id=session['user_id'], category_id=category_id, name=name, price=price, currency_code=currency_code)
+                expense = Expense(user_id=session['user_id'], category_id=category_id, name=name, price=price, currency_code=currency_code, date=date)
                 expense.insert()
 
                 return jsonify(
@@ -495,9 +496,10 @@ def create_app(test_config=None):
             name = body.get("name")
             price = Decimal(body.get("price"))
             currency_code = body.get("currency_code")
+            date = body.get("date")
 
             try:
-                income = Income(user_id=session['user_id'], price=price, name=name, currency_code=currency_code)
+                income = Income(user_id=session['user_id'], price=price, name=name, currency_code=currency_code, date=date)
                 income.insert()
 
                 return jsonify(
