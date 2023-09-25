@@ -5,7 +5,7 @@ import axios from '../../apiConfig';
 import Swal from 'sweetalert2';
 import CustomSelect from '../CustomSelect'
 
-function CreateExpense({ onExpenseCreated, darkMode }) {
+function CreateExpense({ onExpenseCreated, darkMode, date }) {
 
   const options = ["Groceries","Gifts","Transportation", "Personal Care", "Housing", "Utilities", "Shopping" , "Education" , "Entertainment", "Pet Expenses", "Food and Dining", "Subscriptions and Memberships" , "Savings and Investments", "Miscellaneous", "Others" ]
   const defaultValue = 'Select an Category';
@@ -31,7 +31,7 @@ function CreateExpense({ onExpenseCreated, darkMode }) {
             let category = selectedOption
             let currency_code = selectedCurrency
           const response = await axios.post(`/expenses`, {
-            name, category, price, currency_code
+            name, category, price, currency_code, date
           });
           if (response.data.success) {
             Swal.fire('', 'Expense Added', 'success')

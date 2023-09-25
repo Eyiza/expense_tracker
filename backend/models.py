@@ -9,6 +9,7 @@ from sqlalchemy.sql import func
 # from sqlalchemy.orm import sessionmaker
 from werkzeug.security import check_password_hash, generate_password_hash
 from helper import convert_currency, currency_symbol
+from datetime import datetime
 
 
 
@@ -208,6 +209,7 @@ class Expense(db.Model):
         db.session.commit()
 
     def format(self):
+        formatted_date = self.date.strftime("%Y-%m-%d")
         return {
             'id': self.id,
             'user_id': self.user_id,
@@ -217,7 +219,7 @@ class Expense(db.Model):
             'initial_price': self.initial_price,
             'price': str(self.price),
             'currency_code': self.currency_code,
-            'date': self.date,
+            'date': formatted_date,
             'time_created': self.time_created
             }
 
