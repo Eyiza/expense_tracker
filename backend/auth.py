@@ -1,5 +1,5 @@
 import json
-from flask import request, _request_ctx_stack, abort
+from flask import request, _request_ctx_stack, abort, session
 from functools import wraps
 from urllib.request import urlopen
 from flask import redirect, request, session
@@ -24,6 +24,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get("user_id") is None:
+            session.clear()
             # return redirect("/login")
             raise AuthError({
                 'code': 'unauthorized',
