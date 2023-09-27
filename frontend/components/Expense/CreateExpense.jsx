@@ -41,7 +41,7 @@ function CreateExpense({ onExpenseCreated, darkMode, date }) {
                 setPrice(0)
                 setSelectedCurrency(defaultCurrency)
                 setSelectedOption(defaultValue)
-                router.push('/Dashboard')
+                router.push('/Expenses')
             })
           } else {
             Swal.fire('Error', response.data.error, 'warning')
@@ -63,7 +63,7 @@ function CreateExpense({ onExpenseCreated, darkMode, date }) {
 
     
   return (
-    <div className='transition-transform duration-200 ease-in'>
+    <div className='transition-transform duration-200 ease-in mt-20'>
         <form action="" className=' flex flex-col items-center justify-center gap-10'>
             {/* <div className='flex gap-20 items-center justify-around'>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} name="name" id="name" placeholder='Name' className={`border outline-none px-4 py-2 rounded-lg ${darkMode?'text-black placeholder:text-black': 'text-gray-600'}`}/>

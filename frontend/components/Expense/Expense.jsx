@@ -94,6 +94,18 @@ function Expense() {
       const today = new Date(); // Initialize with the current date
       const [selectedDate, setSelectedDate] = useState(today);
       const [selectedExpenses, setSelectedExpenses] = useState([]);
+
+      const ExpenseDate = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate() + 1,
+        0,
+        0,
+        0,
+        0
+      ).toISOString().slice(0, 10);
+
+      
     
       // Function to filter and select expenses for the selected date
       const selectExpensesForDate = (date) => {
@@ -135,10 +147,12 @@ function Expense() {
 
       const [calendar, setcalendar] = useState(false)
 
+
+
     
 
   return (
-    <div className=''>
+    <div  className=''>
       <div className=" text-center mt-8 relative">
       <h1 className="text-2xl font-semibold mb-4">Day To Day Expense</h1>
 
@@ -248,7 +262,7 @@ function Expense() {
                         <p className='text-2xl font-medium'>Total Expense (Debit)</p>
                         <p className='text-xl font-medium'>0.00</p>
                     </div>
-                    <div onClick={handleDrop} className='flex items-center justify-center'>
+                    <div onClick={handleDrop} className='flex items-center justify-center cursor-pointer'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -278,7 +292,7 @@ function Expense() {
         
       </div>
     </div>
-            {drop && <CreateExpense onExpenseCreated={fetchExpenses} darkMode={darkMode} date={selectedDate} />}
+            {drop && <CreateExpense onExpenseCreated={fetchExpenses} darkMode={darkMode} date={ExpenseDate} />}
     </div>
     // <div className='mt-10 mx-20'>
     //     <div>
