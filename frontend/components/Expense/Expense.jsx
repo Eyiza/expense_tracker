@@ -46,10 +46,10 @@ function Expense() {
             const response = await axios.get(`/expenses`);
             if (response.data.success) {
                 setExpenses(response.data.expenses);  
-                console.log(expenses)
+                // console.log(expenses)
             }
             else {
-                console.log(response)
+                // console.log(response)
                 setExpenses([])
             }
         } 
@@ -123,7 +123,7 @@ function Expense() {
         const selectedExpenses = expenses.filter(
           (expense) => expense.date === localDateString.slice(0, 10)
         );
-        console.log(selectedExpense)
+        // console.log(selectedExpense)
         setSelectedExpenses(selectedExpenses);
       };
     

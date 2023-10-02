@@ -332,7 +332,7 @@ def create_app(test_config=None):
             price = Decimal(body.get("price"))
             currency_code = body.get("currency_code")
             date = body.get("date")
-            print(date)
+            # print(date)
 
             try:
                 category_id = Category.query.filter(Category.type == category).first().id
