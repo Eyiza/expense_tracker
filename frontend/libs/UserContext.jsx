@@ -22,7 +22,8 @@ function reducer(state, action){
 const UserProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
-  const [activeSubpage, setActiveSubpage] = useState('')
+  const [activeSubpage, setActiveSubpage] = useState('home')
+  const [calendar, setcalendar] = useState(false)
 
   useEffect(() => {
     // Check if dark mode is enabled in the cookie
@@ -40,7 +41,7 @@ const UserProvider = ({ children }) => {
   };
   
   const [state, dispatch]  = useReducer(reducer, initialState);
-    const value = { state, dispatch, isLoading, setIsLoading, toggleDarkMode, darkMode, activeSubpage, setActiveSubpage};
+    const value = { state, dispatch, calendar, setcalendar, isLoading, setIsLoading, toggleDarkMode, darkMode, activeSubpage, setActiveSubpage};
 
   return (
     <UserContext.Provider value={value}>

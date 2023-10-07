@@ -4,7 +4,7 @@ import { UserContext } from '../../libs/UserContext';
 import axios from '../../apiConfig';
 import Swal from 'sweetalert2';
 
-function EditExpense({ expense, onExpenseUpdated }) {
+function EditExpense({ expense, onExpenseUpdated, setEdit }) {
     const options = ["Groceries","Gifts","Transportation", "Personal Care", "Housing", "Utilities", "Shopping" , "Education" , "Entertainment", "Pet Expenses", "Food and Dining", "Subscriptions and Memberships" , "Savings and Investments", "Miscellaneous", "Others" ]
     const defaultValue = 'Select an option';
     const currencies = ['NGN', 'USD', 'EUR', 'GBP', 'JPY', 'CAD' ];
@@ -34,6 +34,7 @@ function EditExpense({ expense, onExpenseUpdated }) {
           if (response.data.success) {
             Swal.fire('', 'Expense Updated', 'success');
             onExpenseUpdated();
+            setEdit(false)
           } else {
             Swal.fire('Error', response.data.error, 'warning');
           }
@@ -45,14 +46,15 @@ function EditExpense({ expense, onExpenseUpdated }) {
       }
     };
     return (
-    <div className='transition-transform duration-200 ease-in'>
+    <div className='transition-transform duration-200 ease-in fixed top-40 right-20 bg-white p-10 flex flex-col items-start justify-center'>
+      <p onClick={() => {setEdit(false)}} className='text-2xl text-black mb-2 cursor-pointer'>x</p>
         <form action="" className='flex flex-col items-center justify-center gap-10'>
             <div className='flex flex-row items-center gap-10 justify-around'>
-                <label htmlFor="">Name:</label>
+                <label htmlFor="name" className='text-black'>Name:</label>
                 <input type="text" name="name" value={name} onChange={(e) => setName(e.target.value)} id="name"  placeholder='Name' className={`border outline-none px-4 py-2 rounded-lg ${darkMode?'text-black placeholder:text-black': 'text-gray-600'}`}/>
             </div>
             <div className='flex flex-row items-center gap-10 justify-around'>
-            <label htmlFor="">Category:</label>
+            <label className='text-black'>Category:</label>
                  <CustomSelect
                     darkMode={darkMode}
                     options={options}
@@ -63,7 +65,7 @@ function EditExpense({ expense, onExpenseUpdated }) {
             </div>
             
             <div className='flex flex-row items-center gap-10 justify-around'>
-            <label htmlFor="">Price:</label>
+            <label className='text-black' htmlFor="price">Price:</label>
             {/* <input type="number" value="price" placeholder='Price'  name="price" id="price" className={`border outline-none px-4 py-2 appearance-none rounded-lg ${darkMode?'text-black placeholder:text-black':''}`}/> */}
             <input
                 type="number"
@@ -76,7 +78,7 @@ function EditExpense({ expense, onExpenseUpdated }) {
             />
             </div>
             <div className='flex flex-row items-center gap-10 justify-around'>
-                <label htmlFor="">Currency:</label>
+                <label className='text-black'>Currency:</label>
                 {/* <input type="text" name="name" id="name" className='border outline-none px-4 py-2 rounded-lg'/>
                  */}
                  {/* <CustomSelect darkMode={darkMode} options={options} defaultValue={defaultValue} selectedOption={selectedOption} setSelectedOption={setSelectedOption}/> */}
@@ -88,7 +90,7 @@ function EditExpense({ expense, onExpenseUpdated }) {
                     setSelectedOption={setCurrency}
                 />
             </div>
-            <div className='text-center my-10'>
+            <div className='text-center my-5'>
                 {/* <button onClick={handleEditExpense} className='px-10 w-1/2 py-2 bg-primary rounded-lg text-white font-medium' type="submit">Edit</button> */}
                 <button type="submit" onClick={handleEditExpense} disabled={loading} className='px-20 py-2 bg-primary rounded-lg text-white font-medium button'>
                   {loading ? <> <span className="spinner" /> Please wait... </> : 'Edit'}

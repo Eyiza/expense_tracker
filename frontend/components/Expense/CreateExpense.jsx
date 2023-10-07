@@ -5,7 +5,7 @@ import axios from '../../apiConfig';
 import Swal from 'sweetalert2';
 import CustomSelect from '../CustomSelect'
 
-function CreateExpense({ onExpenseCreated, darkMode, date }) {
+function CreateExpense({ onExpenseCreated, darkMode, date, setDrop }) {
 
   const options = ["Groceries","Gifts","Transportation", "Personal Care", "Housing", "Utilities", "Shopping" , "Education" , "Entertainment", "Pet Expenses", "Food and Dining", "Subscriptions and Memberships" , "Savings and Investments", "Miscellaneous", "Others" ]
   const defaultValue = 'Select an Category';
@@ -41,7 +41,7 @@ function CreateExpense({ onExpenseCreated, darkMode, date }) {
                 setPrice(0)
                 setSelectedCurrency(defaultCurrency)
                 setSelectedOption(defaultValue)
-                router.push('/Expenses')
+                setDrop(false)
             })
           } else {
             Swal.fire('Error', response.data.error, 'warning')
@@ -63,7 +63,8 @@ function CreateExpense({ onExpenseCreated, darkMode, date }) {
 
     
   return (
-    <div className='transition-transform duration-200 ease-in mt-20'>
+    <div className='transition-transform duration-200 ease-in fixed top-40 right-20 bg-white p-10 flex flex-col items-start justify-center'>
+      <p onClick={() => {setDrop(false)}} className='text-2xl text-black mb-2 cursor-pointer'>x</p>
         <form action="" className=' flex flex-col items-center justify-center gap-10'>
             {/* <div className='flex gap-20 items-center justify-around'>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} name="name" id="name" placeholder='Name' className={`border outline-none px-4 py-2 rounded-lg ${darkMode?'text-black placeholder:text-black': 'text-gray-600'}`}/>

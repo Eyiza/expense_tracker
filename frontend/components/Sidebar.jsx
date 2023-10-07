@@ -54,7 +54,7 @@ function Sidebar({home, user, darkMode}) {
         </div>
         <div className='flex-1 overflow-x-hidden'>
           <Nav darkMode={darkMode}/>
-          <div className='max-h-full'>{subpageContent}</div>
+          <div className=''>{subpageContent}</div>
             
         </div>
         
