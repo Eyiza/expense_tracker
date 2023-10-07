@@ -1,8 +1,10 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../libs/UserContext';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import ExpenseGraph from '../components/Graphs/ExpenseGraph'
+import axios from '../apiConfig';
+
 
 
 
@@ -10,19 +12,43 @@ function Home() {
     const router = useRouter();
   const { state, dispatch, isLoading, setIsLoading} = useContext(UserContext);
     const {userInfo } = state;
+    const [expenses, setExpenses] = useState([])
     // if(!userInfo && !isLoading){
     //   return router.push('/')}
 
-    const expenses = [
-        { id: 4, date: '2023-08-16', amount: 80 },
-        { id: 4, date: '2023-08-15', amount: 60 },
-        { id: 4, date: '2023-08-17', amount: 60 },
-        { id: 4, date: '2023-09-17', amount: 20 },
-        { id: 4, date: '2023-09-18', amount: 30 },
+    // const expenses = [
+    //     { id: 4, date: '2023-08-16', amount: 80 },
+    //     { id: 4, date: '2023-08-15', amount: 60 },
+    //     { id: 4, date: '2023-08-17', amount: 60 },
+    //     { id: 4, date: '2023-09-17', amount: 20 },
+    //     { id: 4, date: '2023-09-18', amount: 30 },
         
         
-        // Add more expense data here
-      ];
+    //     // Add more expense data here
+    //   ];
+
+    useEffect(() => {
+       fetchExpenses()
+    }, [])
+
+    const fetchExpenses = async () => {
+        try {
+            const response = await axios.get(`/expenses`);
+            if (response.data.success) {
+                setExpenses(response.data.expenses);
+                console.log(response.data.expenses)
+            }
+            else {
+                // console.log(response)
+                setExpenses([])
+            }
+        } 
+        catch (error) {
+          console.error(error);
+        }
+    }
+
+    const TotalExpense = expenses.reduce((total, expense) => total + parseFloat(expense.price), 0);
     
   return (
     <div className=''>
@@ -35,7 +61,7 @@ function Home() {
             <div className='flex flex-col md:flex-row items-center justify-center gap-20 mt-10'>
                 <div className='border border-secondary p-4 px-5 text-center rounded-lg '>
                     <h5 className='text-lg font-medium'>Total Expense</h5>
-                    <p className='font-normal text-sm'>200</p>
+                    <p className='font-normal text-sm'>{TotalExpense}</p>
                 </div>
                 <div className='border border-secondary p-4 px-5 text-center my-10 lg:my-0 rounded-lg'>
                     <h5 className='text-lg font-medium'>Total Income</h5>
