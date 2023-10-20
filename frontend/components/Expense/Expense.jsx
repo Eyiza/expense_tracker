@@ -39,6 +39,9 @@ function Expense() {
       ).toISOString().slice(0, 10);
 
 
+      const [defaultDate, setdefaultDate] = useState(ExpenseDate)
+
+
     const handleDrop = ()=> {
         setDrop(!drop)
         seteditDrop(false)
@@ -51,6 +54,7 @@ function Expense() {
     }
 
     useEffect(() => {
+      const delay = setTimeout(() => {
         fetchExpenses()
 
         if(expenses){
@@ -67,7 +71,9 @@ function Expense() {
         // if (typeof window !== 'undefined') {
         //     fetchExpenses();
         //   }
-        
+      }, 5000);
+
+       return () => clearTimeout(delay)
 
         
     }, [expenses]);
@@ -78,6 +84,7 @@ function Expense() {
             const response = await axios.get(`/expenses`);
             if (response.data.success) {
                 setExpenses(response.data.expenses);
+                setisLoading(false)
                 
                 // console.log(expenses)
             }
@@ -229,6 +236,8 @@ function Expense() {
 
          
         </div>
+
+
         {isdefault? (
             <div onClick={handleDrop} className='flex items-center gap-3 cursor-pointer'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
@@ -248,8 +257,7 @@ function Expense() {
       )}
         
       </div>
-
-      <div className="">
+        <div className="">
         <h2 className="text-lg font-semibold mb-4">
           {selectedDate.toLocaleString('default', {
             month: 'long',
@@ -263,7 +271,11 @@ function Expense() {
              <h3 className="text-lg font-semibold">Daily Expenses</h3>
              {isdefault?
              (
-              <ul>
+              <>
+              {isLoading?(
+                <LoadingScreen/>
+              ): (
+                <ul>
                {defaultExpense.length > 0? (
                 <>{defaultExpense.map((expense, index) => (
                     <li key={index} className='bg-gray-300 p-4 flex items-center justify-between mb-10'>
@@ -288,30 +300,31 @@ function Expense() {
                ): (
                 <li className='bg-gray-300 p-4'>
                     <div className='flex items-center justify-between'>
-                        <p className='text-2xl font-medium'>Total Expense (Debit)</p>
-                        <p className='text-xl font-medium'>0.00</p>
+                        <p className='text-2xl font-medium text-black'>Total Expense (Debit)</p>
+                        <p className='text-xl font-medium text-black'>0.00</p>
                     </div>
                     <div onClick={handleDrop} className='flex items-center justify-center cursor-pointer'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <p className='text-sm'>Tap on the icon to create a expense for on this day</p>
+                    <p className='text-sm text-black'>Tap on the icon to create a expense for on this day</p>
                     </div>
                 </li>
                )}
              </ul>
+              )}</>
              ):(
               <div>
                {selectedExpenses.length > 0? (
                 <>{selectedExpenses.map((expense, index) => (
                     <div key={index} className='bg-gray-300 p-4 flex items-center justify-between mb-10'>
                        <div className='text-left'>
-                           <p className='text-2xl font-medium'>{expense.name}</p>
-                           <p className='text-sm'>Category</p>
+                           <p className='text-2xl font-medium text-black'>{expense.name}</p>
+                           <p className='text-sm text-black'>Category</p>
                        </div>
    
                        <div>
-                       <p className='text-xl font-medium'>{userInfo?.currency_symbol}{expense.price}</p>
+                       <p className='text-xl font-medium text-black'>{userInfo?.currency_symbol}{expense.price}</p>
                        <div className='flex items-center justify-center'>
                         <svg onClick={() => handleEditExpense(expense)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-blue-600 cursor-pointer">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
@@ -326,14 +339,14 @@ function Expense() {
                ): (
                 <div className='bg-gray-300 p-4'>
                     <div className='flex items-center justify-between'>
-                        <p className='text-2xl font-medium'>Total Expense (Debit)</p>
-                        <p className='text-xl font-medium'>0.00</p>
+                        <p className='text-2xl font-medium text-black'>Total Expense (Debit)</p>
+                        <p className='text-xl font-medium text-black'>0.00</p>
                     </div>
                     <div onClick={handleDrop} className='flex items-center justify-center cursor-pointer'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <p className='text-sm'>Tap on the icon to create a expense for on this day</p>
+                    <p className='text-sm text-black'>Tap on the icon to create a expense for on this day</p>
                     </div>
                 </div>
                )}
@@ -347,23 +360,26 @@ function Expense() {
        
         {viewMode == 'Monthly' && (
             <div className='flex items-center justify-between px-10 bg-gray-300 py-2' >
-            <h3 className="text-lg font-semibold">Monthly Total Expenses</h3>
-            <p className='text-xl font-medium'>{userInfo?.currency_symbol}{calculateExpenses(selectedDate).monthlyTotal}</p>
+            <h3 className="text-lg font-semibold text-black">Monthly Total Expenses</h3>
+            <p className='text-xl font-medium text-black'>{userInfo?.currency_symbol}{calculateExpenses(selectedDate).monthlyTotal}</p>
           </div>
   
         )}
 
         {viewMode == 'Yearly' && (
             <div className='flex items-center justify-between px-10 bg-gray-300 py-2'>
-            <h3 className="text-lg font-semibold">Yearly Total Expenses</h3>
-            <p className='text-xl font-medium'>{userInfo?.currency_symbol}{calculateExpenses(selectedDate).yearlyTotal}</p>
+            <h3 className="text-lg font-semibold text-black">Yearly Total Expenses</h3>
+            <p className='text-xl font-medium text-black'>{userInfo?.currency_symbol}{calculateExpenses(selectedDate).yearlyTotal}</p>
           </div>
         )}
         
         
       </div>
+      
+
+      
     </div>
-            {drop && <CreateExpense onExpenseCreated={fetchExpenses} setDrop={setDrop} darkMode={darkMode} date={ExpenseDate} />}
+            {drop && <CreateExpense onExpenseCreated={fetchExpenses} setDrop={setDrop} darkMode={darkMode} date={ExpenseDate} setisdefault={setisdefault} setisLoading={setisLoading} />}
             {editDrop && (
                 <div className={`${drop?'hidden': 'block'}`}>
                     {/* <EditExpense /> */}
@@ -371,93 +387,6 @@ function Expense() {
                     {/* <EditExpense expense={expenseData} onExpenseUpdated={fetchExpenses} /> */}
                 </div>)}
     </div>
-    // <div className='mt-10 mx-20'>
-    //     <div>
-    //         <div className='flex items-center justify-between gap-20 mb-10'>
-    //             <p className='text-4xl font-bold text-secondary'>{drop ? 'Add Expense' : 'Expense'}</p>
-    //             {editDrop ? (
-    //                 <button onClick={removeDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
-    //                 x
-    //                 </button>
-    //             ) : (
-    //                 <button onClick={handleDrop} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
-    //                 {drop?'x':'+'}
-    //                 </button>
-    //             )}
-    //         </div>
-            
-    //         {isLoading?<LoadingScreen/>:
-    //         <>
-    //         {expenses.length > 0 ?(
-    //             <div className={`${drop? 'hidden': 'block'} ${editDrop? 'hidden': 'block'}`}>
-    //             <table class="table-auto">
-    //                 <thead className='mb-10'>
-    //                     <tr className='border-b '>
-    //                     <th class="px-4 py-2">Name</th>
-    //                     <th class="px-4 py-2">Categories</th>
-    //                     <th class="px-4 py-2">Price</th>
-    //                     <th class="px-4 py-2"></th>
-    //                     <th class="px-4 py-2"></th>
-    //                     <th class="px-4 py-2"></th>
-    //                     <th class="px-4 py-2"></th>
-    //                     <th class="px-4 py-2"></th>
-    //                     <th class="px-4 py-2"></th>
-    //                     <th class="px-4 py-2"></th>
-    //                     <th class="px-4 py-2"></th>
-    //                     </tr>
-    //                 </thead>
-    //                 <tbody>
-    //                     {expenses?.map((expense) => (
-    //                             <tr key={expense.id}>
-    //                             <td class=" px-4 py-2">{expense.name}</td>
-    //                             <td class=" px-4 py-2">{expense.category_name}</td>
-    //                             <td class=" px-4 py-2">{userInfo?.currency_symbol}{expense.price}</td>
-    //                             <td></td>
-    //                             <td></td>
-    //                             <td></td>
-    //                             <td></td>
-    //                             <td></td>
-    //                             <td></td>
-    //                             <td></td>
-    //                             <td></td>
-    //                             <td class=" px-4 py-2"><button onClick={() => handleEditExpense(expense)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
-    //                                 Edit
-    //                             </button></td>
-    //                             <td class=" px-4 py-2"> <button onClick={() => deleteExpense(expense.id)} className='text-base font-bold rounded-full border py-1 hover:border-secondary transition duration-150 ease-in-out px-3'>
-    //                                 Delete
-    //                             </button></td>
-
-    //                             </tr>
-    //                     ))}
-                        
-                        
-                        
-
-    //                 </tbody>
-    //             </table>
-    //         </div>
-    //         ) : (
-    //             <div>
-    //                 <p className={`text-center font-bold text-sm ${darkMode?'text-[#f0f0f0]': 'text-gray-500'}  my-40 ${drop? 'hidden': 'block'} ${editDrop? 'hidden': 'block'}`}>Urghhhhhhhhhhhh you don't have an expense click the icon to add a new expense</p>
-    //             </div>
-    //         )}
-            
-    //         </>
-            
-    //         }
-    //         {drop && <CreateExpense onExpenseCreated={fetchExpenses} darkMode={darkMode} />}
-
-    //         {editDrop && (
-    //             <div className={`${drop?'hidden': 'block'}`}>
-    //                 {/* <EditExpense /> */}
-    //                 <EditExpense expense={selectedExpense} onExpenseUpdated={fetchExpenses} />
-    //                 {/* <EditExpense expense={expenseData} onExpenseUpdated={fetchExpenses} /> */}
-    //             </div>
-                
-    //         )}
-            
-    //     </div>
-    // </div>
   )
 }
 

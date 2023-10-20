@@ -5,7 +5,7 @@ import axios from '../../apiConfig';
 import Swal from 'sweetalert2';
 import CustomSelect from '../CustomSelect'
 
-function CreateExpense({ onExpenseCreated, darkMode, date, setDrop }) {
+function CreateExpense({ onExpenseCreated, darkMode, date, setisdefault, setisLoading, setDrop }) {
 
   const options = ["Groceries","Gifts","Transportation", "Personal Care", "Housing", "Utilities", "Shopping" , "Education" , "Entertainment", "Pet Expenses", "Food and Dining", "Subscriptions and Memberships" , "Savings and Investments", "Miscellaneous", "Others" ]
   const defaultValue = 'Select an Category';
@@ -24,6 +24,7 @@ function CreateExpense({ onExpenseCreated, darkMode, date, setDrop }) {
       e.preventDefault();
       try {
         setLoading(true);
+        setisLoading(true)
         if (name.length == 0 || selectedOption == 'Select an option' || price == 0){
           Swal.fire('Not Yet', 'All fields are required', 'warning')
         }
@@ -41,7 +42,8 @@ function CreateExpense({ onExpenseCreated, darkMode, date, setDrop }) {
                 setPrice(0)
                 setSelectedCurrency(defaultCurrency)
                 setSelectedOption(defaultValue)
-                setDrop(false)
+                setisdefault(true)
+                setisLoading(false)
             })
           } else {
             Swal.fire('Error', response.data.error, 'warning')

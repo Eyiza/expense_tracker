@@ -43,7 +43,11 @@ function Sidebar({home, user, darkMode}) {
   return (
     <div className={`flex `}>
         <div className={`z-50 sticky top-0 px-5 lg:px-20 flex flex-col items-start gap-10 py-10 h-[100vh]  shadow-lg ${darkMode?'bg-[#1a202c] text-[#f0f0f0]': 'bg-white text-black'}`}>
-        <button onClick={() => setActiveSubpage("home")} className={`${activeSubpage=='home'? 'border-b-2 border-primary transition-transform duration-150 ease-in-out ': ''}`}>Home</button>
+
+          <Link href={`/Dashboard`}>
+            <button onClick={() => setActiveSubpage("home")} className={`${activeSubpage=='home'? 'border-b-2 border-primary transition-transform duration-150 ease-in-out ': ''}`}>Home</button>
+          </Link>
+       
         <Link href='/Expenses'>
           <button onClick={() => setActiveSubpage("Expense")} className={`${activeSubpage=='Expense'? 'border-b-2 border-primary transition-transform duration-150 ease-in-out': ''}`}>Expense</button>
         
